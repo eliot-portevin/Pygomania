@@ -6,7 +6,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.idle_sheet = Spritesheet('media/Mage_animation/idle-sheet.png')
         self.move_sheet = Spritesheet('media/spritesheet_move.png')
-        self.punch_sheet = Spritesheet("media/Mage_animation/q_spell-sheet.png")
+        self.punch_sheet = Spritesheet("media/Mage_animation/q_spell1-sheet.png")
         self.idle_right_sprites = []
         self.idle_left_sprites = []
         self.move_right_sprites = []
