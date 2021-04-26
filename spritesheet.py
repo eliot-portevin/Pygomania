@@ -22,7 +22,8 @@ class Spritesheet:
         sprite = self.data['frames'][name]
         in_image = sprite['frame']
         original = sprite['spriteSourceSize']
+        size = sprite['sourceSize']
         x,y,w,h = in_image['x'],in_image['y'],in_image['w'],in_image['h']
-        x_o,y_o,w_o,h_o = original['x'],original['y'],original['w'],original['h']
+        x_o,y_o,w_o,h_o = original['x'],original['y'],size['w'],size['h']
         image = self.get_sprites(x,y,w,h,x_o,y_o,w_o,h_o)
         return image
