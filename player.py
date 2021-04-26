@@ -113,7 +113,7 @@ class Player(pygame.sprite.Sprite):
 
     def fall_down(self):
         if self.jumping or self.double_jumping:
-            self.velocity += 7
+            self.velocity += 12
 
     def check_height(self):
         if self.rect.bottom >= round(215 / 216 * self.H):

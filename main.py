@@ -48,6 +48,8 @@ def main():
                         game.player.moving_right = False
                         game.player.moving = True
                     game.player.key = 0
+                if event.key == pygame.K_s:
+                    game.player.fall_down()
                 if event.key == pygame.K_d:
                     if game.keys.get(pygame.K_a):
                         game.player.moving = False
