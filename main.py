@@ -3,7 +3,7 @@ from game import Game
 
 pygame.init()
 
-win = pygame.display.set_mode((1440, 900))
+win = pygame.display.set_mode((1440,900))
 W, H = win.get_width(), win.get_height()
 
 pygame.display.set_caption('Pygomania')
@@ -21,7 +21,6 @@ def main():
     clock = pygame.time.Clock()
 
     while playing:
-        win.fill((0,0,0))
         clock.tick(FPS)
         win.blit(BG, (0, 0))
 
@@ -43,31 +42,32 @@ def main():
                         game.player.punching = True
                         game.player.key = 0
                 if event.key == pygame.K_a:
-                    game.player.moving_right = False
-                    game.player.moving = True
+                    if game.keys.get(pygame.K_d):
+                        game.player.moving = False
+                    else:
+                        game.player.moving_right = False
+                        game.player.moving = True
                     game.player.key = 0
                 if event.key == pygame.K_d:
-                    game.player.moving_right = True
-                    game.player.moving = True
-                    game.player.key = 0
+                    if game.keys.get(pygame.K_a):
+                        game.player.moving = False
+                    else:
+                        game.player.moving_right = True
+                        game.player.moving = True
                 if event.key == pygame.K_SPACE and game.menu_open:
                     game.menu_open = False
-                if event.key == pygame.K_ESCAPE and game.pause and not game.menu_open:
-                    game.pause = False
-                if event.key == pygame.K_ESCAPE and not game.menu_open:
-                    game.pause = True
             elif event.type == pygame.KEYUP:
                 game.keys[event.key] = False
                 if event.key in {pygame.K_a,pygame.K_d}:
-                    if not (game.keys.get(pygame.K_a) and game.keys.get(pygame.K_d)):
+                    if not (game.keys.get(pygame.K_a) or game.keys.get(pygame.K_d)):
                         game.player.moving = False
-                        game.player.key = 0
                     elif game.keys.get(pygame.K_a):
+                        game.player.moving = True
                         game.player.moving_right = False
-                        game.player.key = 0
                     elif game.keys.get(pygame.K_d):
                         game.player.moving_right = True
-                        game.player.key = 0
+                        game.player.moving = True
+                    game.player.key = 0
             elif event.type == pygame.QUIT:
                 playing = False
                 pygame.quit()

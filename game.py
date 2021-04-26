@@ -33,25 +33,26 @@ class Game:
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
         self.green = (0, 255, 0)
-        self.red = (220, 0, 0, 170)
-
-        #Temporary value
+        self.red = (255,0,0)
+        # Temporary values
         self.tmp = 1
-
     def update(self):
         if self.keys.get(pygame.K_a):
             self.player.move_left()
         if self.keys.get(pygame.K_d):
             self.player.move_right()
         if self.keys.get(pygame.K_s):
-            self.player.fall_down()
+            self.player.fall_down
 
         self.player.gravity()
         self.player.animate()
         self.player.check_height()
         self.player_sprites.draw(self.WINDOW)
-        #Life bar
-        self.BG.blit(self.player.life_image, (40, 60))
+        self.player.fireballs.draw(self.WINDOW)
+        for fireball in self.player.fireballs:
+            fireball.move()
+        # Life Bar
+        self.BG.blit(self.player.life_image, (40,60))
         if self.tmp == 1:
             shape_surf = pygame.Surface(pygame.Rect((120, 66, 4 * self.player.life, 40)).size, pygame.SRCALPHA)
             pygame.draw.rect(shape_surf, self.red, shape_surf.get_rect())
@@ -60,17 +61,20 @@ class Game:
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
     def menu_update(self):
-        self.WINDOW.blit(self.title_text2, (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
+        self.WINDOW.blit(self.title_text2,
+                         (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
         self.WINDOW.blit(self.title_text1, (round(self.W / 2 - self.title_text1.get_width() / 2), round(self.H / 2.6)))
         if self.show_prompt:
-            self.WINDOW.blit(self.prompt2, (round(self.W/2-self.prompt2.get_width()/2-3), round(self.H/1.4+3)))
-            self.WINDOW.blit(self.prompt1, (round(self.W/2-self.prompt1.get_width()/2), round(self.H/1.4)))
+            self.WINDOW.blit(self.prompt2, (round(self.W/2-self.prompt2.get_width()/2-3), round(self.H/1.8+3)))
+            self.WINDOW.blit(self.prompt1, (round(self.W/2-self.prompt1.get_width()/2), round(self.H/1.8)))
 
         if pygame.time.get_ticks() - self.time > 500:
             self.show_prompt = not self.show_prompt
             self.time = pygame.time.get_ticks()
 
     def pause_screen(self):
-        if self.pause is True:
-            self.WINDOW.blit(self.title_text2, (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
-            self.WINDOW.blit(self.title_text2, (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
+        if self.pause:
+            self.WINDOW.blit(self.title_text2,
+                             (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
+            self.WINDOW.blit(self.title_text2,
+                             (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
