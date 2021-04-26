@@ -19,10 +19,10 @@ class Player(pygame.sprite.Sprite):
             self.idle_right_sprites.append(sprite)
             self.idle_left_sprites.append(pygame.transform.flip(sprite,True,False))
         for row in range(8):
-            sprite = self.move_sheet.get_sprites(row*47,0,47,53)
+            sprite = self.move_sheet.get_sprites(row*47,0,47,53,0,0,47,53)
             self.move_right_sprites.append(pygame.transform.scale(sprite, (120, 135)))
         for row in range(8):
-            sprite = self.move_sheet.get_sprites(row*47,0,47,53)
+            sprite = self.move_sheet.get_sprites(row*47,0,47,53,0,0,47,53)
             sprite = pygame.transform.flip(sprite,True,False)
             self.move_left_sprites.append(pygame.transform.scale(sprite, (120, 135)))
         for row in range(1,9):
