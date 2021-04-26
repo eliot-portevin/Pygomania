@@ -61,12 +61,11 @@ class Game:
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
     def menu_update(self):
-        self.WINDOW.blit(self.title_text2,
-                         (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
+        self.WINDOW.blit(self.title_text2, (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
         self.WINDOW.blit(self.title_text1, (round(self.W / 2 - self.title_text1.get_width() / 2), round(self.H / 2.6)))
         if self.show_prompt:
-            self.WINDOW.blit(self.prompt2, (round(self.W/2-self.prompt2.get_width()/2-3), round(self.H/1.8+3)))
-            self.WINDOW.blit(self.prompt1, (round(self.W/2-self.prompt1.get_width()/2), round(self.H/1.8)))
+            self.WINDOW.blit(self.prompt2, (round(self.W/2-self.prompt2.get_width()/2-3), round(self.H/1.55+3)))
+            self.WINDOW.blit(self.prompt1, (round(self.W/2-self.prompt1.get_width()/2), round(self.H/1.55)))
 
         if pygame.time.get_ticks() - self.time > 500:
             self.show_prompt = not self.show_prompt

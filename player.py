@@ -94,7 +94,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= 5
 
     def gravity(self):
-        if self.jumping and (self.velocity < 0 or self.rect.bottom < round(203/216*self.H)):
+        if self.jumping and (self.velocity < 0 or self.rect.bottom < round(215/216*self.H)):
             self.velocity += self.acceleration
             self.rect.y += self.velocity
         else:
@@ -116,5 +116,5 @@ class Player(pygame.sprite.Sprite):
             self.velocity += 7
 
     def check_height(self):
-        if self.rect.bottom >= round(203 / 216 * self.H):
-            self.rect.bottom = round(203 / 216 * self.H)
+        if self.rect.bottom >= round(215 / 216 * self.H):
+            self.rect.bottom = round(215 / 216 * self.H)
