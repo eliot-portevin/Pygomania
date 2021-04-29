@@ -23,11 +23,15 @@ def main():
     while playing:
         clock.tick(FPS)
         win.blit(BG, (0, 0))
-
+        if not game.connected:
+            game.connect()
         if game.menu_open:
             game.menu_update()
         elif game.pause:
             game.pause_screen()
+        elif game.main_menu:
+            game.main_menu_func()
+
         else:
             game.update()
 
@@ -58,6 +62,9 @@ def main():
                         game.player.moving = True
                 if event.key == pygame.K_SPACE and game.menu_open:
                     game.menu_open = False
+                    game.main_menu = True
+                elif event.key == pygame.K_SPACE and game.main_menu:
+                    game.main_menu = False
             elif event.type == pygame.KEYUP:
                 game.keys[event.key] = False
                 if event.key in {pygame.K_a,pygame.K_d}:

@@ -13,6 +13,7 @@ class Game:
         self.menu_open = True
         self.pause = False
         self.show_prompt = False
+        self.main_menu = False
 
 
         self.keys = {}
@@ -37,10 +38,22 @@ class Game:
         # Temporary values
         self.tmp = 1
 
-    def main_menu(self):
-        while self.not_start:
-            self.WINDOW.blit(BG, (0, 0))
+        #Server values
+        self.connected = False
 
+    def text(self, font, fontsize, text, position):
+        font = pygame.font.SysFont(font, fontsize)
+        text_white = font.render(text, 1, (255, 255, 255))
+        text_black = font.render(text, 1, (0, 0, 0))
+        self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width()/2 - round(fontsize / 20)), position[1] + round(fontsize / 25)))
+        self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width()/2), position[1]))
+    def main_menu_func(self):
+        self.WINDOW.blit(self.BG, (0, 0))
+        self.text('toonaround', 30, 'nothing', (200, 30))
+
+    def connect(self):
+        self.connected = True
+        pass
     def update(self):
         if self.keys.get(pygame.K_a):
             self.player.move_left()
