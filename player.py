@@ -1,18 +1,44 @@
 import pygame, os
 from spritesheet import Spritesheet
 from fireball import Fireball
+
+
 class Player(pygame.sprite.Sprite):
-    def __init__(self, W, H, x, y):
+    def __init__(self, W, H, x, y,character):
         super().__init__()
-        self.idle_sheet = Spritesheet('media/Mage_animation/idle-sheet.png')
-        self.move_sheet = Spritesheet('media/Mage_animation/move-sheet.png')
-        self.punch_sheet = Spritesheet("media/Mage_animation/q_spell-sheet.png")
+        self.idle_sheet = Spritesheet(f'{character[1]}idle-sheet.png')
+        self.move_sheet = Spritesheet(f'{character[1]}move-sheet.png')
+        self.crouched_sheet = None
+        self.jump_sheet = None
+        self.slight_hit_sheet = None
+        self.big_hit_sheet = None
+        self.jumping_attack_sheet = None
+        self.falling_attack_sheet = None
+        self.crouched_attack = None
+        self.spell_sheet = Spritesheet(f"{character[1]}q_spell-sheet.png")
+        self.ultimate_sheet = None
+
         self.idle_right_sprites = []
         self.idle_left_sprites = []
         self.move_right_sprites = []
         self.move_left_sprites = []
-        self.q_spell_right_sprites = []
-        self.q_spell_left_sprites = []
+        self.crouched_right_sprites = []
+        self.crouched_left_sprites = []
+        self.jump_right_sprites = []
+        self.jump_left_sprites = []
+        self.slight_hit_right_sprites = []
+        self.slight_hit_left_sprites = []
+        self.big_hit_right_sprites = []
+        self.big_hit_left_sprites = []
+        self.jumping_attack_right_sprites = []
+        self.jumping_attack_left_sprites = []
+        self.falling_attack_right_sprites = []
+        self.falling_attack_left_sprites = []
+        self.spell_right_sprites = []
+        self.spell_left_sprites = []
+        self.ultimate_right_sprites = []
+        self.ultimate_left_sprites = []
+
         for row in range(1,9):
             sprite = self.idle_sheet.parse_sprites(f"idle{row}.png")
             sprite = pygame.transform.scale(sprite,(256,256))
@@ -28,10 +54,10 @@ class Player(pygame.sprite.Sprite):
             sprite = pygame.transform.flip(sprite,True,False)
             self.move_left_sprites.append(pygame.transform.scale(sprite, (120, 135)))
         for row in range(1,9):
-            sprite = self.punch_sheet.parse_sprites(f"q_spell{row}.png")
+            sprite = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
-            self.q_spell_right_sprites.append(sprite)
-            self.q_spell_left_sprites.append(pygame.transform.flip(sprite,True,False))
+            self.spell_right_sprites.append(sprite)
+            self.spell_left_sprites.append(pygame.transform.flip(sprite,True,False))
         self.punching = False
         self.jumping = False
         self.double_jumping = False
@@ -65,9 +91,9 @@ class Player(pygame.sprite.Sprite):
             self.key = (self.key+1) % 8
             if self.punching:
                 if self.moving_right:
-                    self.image = self.q_spell_right_sprites[self.key]
+                    self.image = self.spell_right_sprites[self.key]
                 else:
-                    self.image = self.q_spell_left_sprites[self.key]
+                    self.image = self.spell_left_sprites[self.key]
                 if self.key == 7:
                     self.punching = False
                     if self.moving_right:

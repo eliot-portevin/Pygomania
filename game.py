@@ -17,15 +17,15 @@ class Game:
         self.keys = {}
 
         # Variables related to the characters
-        self.character = 0
+        self.character = 1
         # Mage:1, Boxer:2, Dwarf:3, Soldier:4, Gorgone:5, Tenniswoman:6
         # Number, Folder
-        self.attacks_dict = {1: [1, 'media/Mage_animation'], 2: [2, 'media/Boxer_animation'],
-                             3: [3, 'media/Dwarf_animation'],
-                             4: [4, 'media/Soldier_animation'], 5: [5, 'media/Gorgone_animation'],
-                             6: [6, 'media/Tenniswoman_animation']}
+        self.attacks_dict = {1: [1, 'media/Mage_animation/'], 2: [2, 'media/Boxer_animation/'],
+                             3: [3, 'media/Dwarf_animation/'],
+                             4: [4, 'media/Soldier_animation/'], 5: [5, 'media/Gorgone_animation/'],
+                             6: [6, 'media/Tenniswoman_animation/']}
 
-        self.player = Player(W, H, round(W / 2), round(203 / 216 * H))
+        self.player = Player(W, H, round(W / 2), round(203 / 216 * H),self.attacks_dict[self.character])
         self.player_sprites = pygame.sprite.Group()
         self.player_sprites.add(self.player)
 
