@@ -38,6 +38,15 @@ class Game:
         self.prompt2 = self.prompt_font.render('Press Space to Continue', True, (0, 0, 0))
         self.time = 0
 
+        self.start_button = pygame.image.load('media/start_button.png')
+        self.start_button = pygame.transform.scale(self.start_button, (230, 85))
+        self.start_button_hovering = pygame.image.load('media/start_button_hovering.png')
+        self.start_button_hovering = pygame.transform.scale(self.start_button_hovering, (230, 85))
+
+        self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, self.H - 180, 230, 85)
+
+        self.mouse_rect = pygame.Rect(0, 0, 1, 1)
+
         # Colours
         self.white = (255, 255, 255)
         self.button_colour = (217, 215, 126, 140)
@@ -60,8 +69,7 @@ class Game:
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
         self.text('toonaround', 90, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
-        mouse_rect = pygame.Rect(0, 0, 1, 1)
-        mouse_rect.x, mouse_rect.y = pygame.mouse.get_pos()
+        self.mouse_rect.x, self.mouse_rect.y = pygame.mouse.get_pos()
         #First player line
         for i in range(3):
             s = pygame.Surface((200, 130), pygame.SRCALPHA)
@@ -70,7 +78,7 @@ class Game:
             y = round(self.H / 5 * (i + 1.5))
             self.WINDOW.blit(s, (x, y))
             rect = pygame.Rect(x, y, 200, 130)
-            if mouse_rect.colliderect(rect):
+            if self.mouse_rect.colliderect(rect):
                 self.WINDOW.blit(s, (x, y))
 
         #Second line
@@ -81,8 +89,14 @@ class Game:
             y = round(self.H / 5 * (i + 1.5))
             self.WINDOW.blit(s, (x, y))
             rect = pygame.Rect(x, y, 200, 130)
-            if mouse_rect.colliderect(rect):
+            if self.mouse_rect.colliderect(rect):
                 self.WINDOW.blit(s, (x, y))
+
+        #Start button
+        self.WINDOW.blit(self.start_button, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
+
+        if self.mouse_rect.colliderect(self.start_rect):
+            self.WINDOW.blit(self.start_button_hovering, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
 
     def connect(self):
         self.connected = True

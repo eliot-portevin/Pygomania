@@ -63,8 +63,6 @@ def main():
                 if event.key == pygame.K_SPACE and game.menu_open:
                     game.menu_open = False
                     game.main_menu = True
-                elif event.key == pygame.K_SPACE and game.main_menu:
-                    game.main_menu = False
             elif event.type == pygame.KEYUP:
                 game.keys[event.key] = False
                 if event.key in {pygame.K_a, pygame.K_d}:
@@ -77,6 +75,10 @@ def main():
                         game.player.moving_right = True
                         game.player.moving = True
                     game.player.key = 0
+            if event.type == pygame.MOUSEBUTTONUP:
+                game.mouse_rect.x, game.mouse_rect.y = pygame.mouse.get_pos()
+                if game.mouse_rect.colliderect(game.start_rect):
+                    game.main_menu = False
             elif event.type == pygame.QUIT:
                 playing = False
                 pygame.quit()
