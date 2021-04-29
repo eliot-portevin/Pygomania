@@ -36,6 +36,11 @@ class Game:
         self.red = (255,0,0, 180)
         # Temporary values
         self.tmp = 1
+
+    def main_menu(self):
+        while self.not_start:
+            self.WINDOW.blit(BG, (0, 0))
+
     def update(self):
         if self.keys.get(pygame.K_a):
             self.player.move_left()
