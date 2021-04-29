@@ -3,7 +3,7 @@ from game import Game
 
 pygame.init()
 
-win = pygame.display.set_mode((1440,900))
+win = pygame.display.set_mode((1440, 900))
 W, H = win.get_width(), win.get_height()
 
 pygame.display.set_caption('Pygomania')
@@ -17,11 +17,11 @@ game = Game(win, W, H, BG)
 
 def main():
     playing = True
-    FPS = 60
+    fps = 60
     clock = pygame.time.Clock()
 
     while playing:
-        clock.tick(FPS)
+        clock.tick(fps)
         win.blit(BG, (0, 0))
         if not game.connected:
             game.connect()
@@ -67,7 +67,7 @@ def main():
                     game.main_menu = False
             elif event.type == pygame.KEYUP:
                 game.keys[event.key] = False
-                if event.key in {pygame.K_a,pygame.K_d}:
+                if event.key in {pygame.K_a, pygame.K_d}:
                     if not (game.keys.get(pygame.K_a) or game.keys.get(pygame.K_d)):
                         game.player.moving = False
                     elif game.keys.get(pygame.K_a):
