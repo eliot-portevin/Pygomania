@@ -16,16 +16,16 @@ class Game:
         self.main_menu = False
         self.keys = {}
 
-        # Variables related to the characters
+        # Players
+        self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = 1
-        # Mage:1, Boxer:2, Dwarf:3, Soldier:4, Gorgone:5, Tenniswoman:6
         # Number, Folder
         self.attacks_dict = {1: [1, 'media/Mage_animation/'], 2: [2, 'media/Boxer_animation/'],
                              3: [3, 'media/Dwarf_animation/'],
                              4: [4, 'media/Soldier_animation/'], 5: [5, 'media/Gorgone_animation/'],
                              6: [6, 'media/Tenniswoman_animation/']}
 
-        self.player = Player(W, H, round(W / 2), round(203 / 216 * H),self.attacks_dict[self.character])
+        self.player = Player(W, H, round(W / 2), round(203 / 216 * H), self.attacks_dict[self.character])
         self.player_sprites = pygame.sprite.Group()
         self.player_sprites.add(self.player)
 
@@ -34,12 +34,13 @@ class Game:
         self.title_text2 = self.title_font.render('Pygomania', True, (0, 0, 0))
 
         self.prompt_font = pygame.font.SysFont('toonaround', 50)
-        self.prompt1 = self.prompt_font.render('Press Space to Continue', 1, (255, 255, 255))
-        self.prompt2 = self.prompt_font.render('Press Space to Continue', 1, (0, 0, 0))
+        self.prompt1 = self.prompt_font.render('Press Space to Continue', True, (255, 255, 255))
+        self.prompt2 = self.prompt_font.render('Press Space to Continue', True, (0, 0, 0))
         self.time = 0
 
         # Colours
         self.white = (255, 255, 255)
+        self.button_colour = (217, 215, 126, 140)
         self.black = (0, 0, 0)
         self.green = (0, 255, 0)
         self.red = (255, 0, 0, 180)
@@ -51,15 +52,37 @@ class Game:
 
     def text(self, font, fontsize, text, position):
         font = pygame.font.SysFont(font, fontsize)
-        text_white = font.render(text, 1, (255, 255, 255))
-        text_black = font.render(text, 1, (0, 0, 0))
-        self.WINDOW.blit(text_black, (
-        round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)), position[1] + round(fontsize / 25)))
+        text_white = font.render(text, True, (255, 255, 255))
+        text_black = font.render(text, True, (0, 0, 0))
+        self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)), position[1] + round(fontsize / 25)))
         self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width() / 2), position[1]))
 
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
-        self.text('toonaround', 70, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
+        self.text('toonaround', 90, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
+        mouse_rect = pygame.Rect(0, 0, 1, 1)
+        mouse_rect.x, mouse_rect.y = pygame.mouse.get_pos()
+        #First player line
+        for i in range(3):
+            s = pygame.Surface((200, 130), pygame.SRCALPHA)
+            s.fill(self.button_colour)
+            x = 150
+            y = round(self.H / 5 * (i + 1.5))
+            self.WINDOW.blit(s, (x, y))
+            rect = pygame.Rect(x, y, 200, 130)
+            if mouse_rect.colliderect(rect):
+                self.WINDOW.blit(s, (x, y))
+
+        #Second line
+        for i in range(3):
+            s = pygame.Surface((200, 130), pygame.SRCALPHA)
+            s.fill(self.button_colour)
+            x = self.W - (150 + s.get_width())
+            y = round(self.H / 5 * (i + 1.5))
+            self.WINDOW.blit(s, (x, y))
+            rect = pygame.Rect(x, y, 200, 130)
+            if mouse_rect.colliderect(rect):
+                self.WINDOW.blit(s, (x, y))
 
     def connect(self):
         self.connected = True
