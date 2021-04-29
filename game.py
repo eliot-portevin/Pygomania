@@ -65,6 +65,8 @@ class Game:
         text_black = font.render(text, True, (0, 0, 0))
         self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)), position[1] + round(fontsize / 25)))
         self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width() / 2), position[1]))
+        n = text_white.get_width()
+        return n
 
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
@@ -80,6 +82,7 @@ class Game:
             rect = pygame.Rect(x, y, 200, 130)
             if self.mouse_rect.colliderect(rect):
                 self.WINDOW.blit(s, (x, y))
+            self.text('toonaround', 30, self.players[i], (150 + s.get_width() / 2, y + s.get_height() + 5))
 
         #Second line
         for i in range(3):
@@ -91,6 +94,7 @@ class Game:
             rect = pygame.Rect(x, y, 200, 130)
             if self.mouse_rect.colliderect(rect):
                 self.WINDOW.blit(s, (x, y))
+            self.text('toonaround', 30, self.players[i + 3], (self.W - (150 + s.get_width() / 2), y + s.get_height() + 5))
 
         #Start button
         self.WINDOW.blit(self.start_button, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
