@@ -3,21 +3,29 @@ from player import Player
 
 
 class Game:
-    def __init__(self,win,W,H,BG):
+    def __init__(self, win, W, H, BG):
         self.WINDOW = win
         self.W = W
         self.H = H
         self.BG = BG
 
-        #Menu variables
+        # Menu variables
         self.menu_open = True
         self.pause = False
         self.show_prompt = False
         self.main_menu = False
-
-
         self.keys = {}
-        self.player = Player(W, H, round(W/2), round(203/216*H))
+
+        # Variables related to the characters
+        self.character = 0
+        # Mage:1, Boxer:2, Dwarf:3, Soldier:4, Gorgone:5, Tenniswoman:6
+        # Number, Folder
+        self.attacks_dict = {1: [1, 'media/Mage_animation'], 2: [2, 'media/Boxer_animation'],
+                             3: [3, 'media/Dwarf_animation'],
+                             4: [4, 'media/Soldier_animation'], 5: [5, 'media/Gorgone_animation'],
+                             6: [6, 'media/Tenniswoman_animation']}
+
+        self.player = Player(W, H, round(W / 2), round(203 / 216 * H))
         self.player_sprites = pygame.sprite.Group()
         self.player_sprites.add(self.player)
 
@@ -34,19 +42,21 @@ class Game:
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
         self.green = (0, 255, 0)
-        self.red = (255,0,0, 180)
+        self.red = (255, 0, 0, 180)
         # Temporary values
         self.tmp = 1
 
-        #Server values
+        # Server values
         self.connected = False
 
     def text(self, font, fontsize, text, position):
         font = pygame.font.SysFont(font, fontsize)
         text_white = font.render(text, 1, (255, 255, 255))
         text_black = font.render(text, 1, (0, 0, 0))
-        self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width()/2 - round(fontsize / 20)), position[1] + round(fontsize / 25)))
-        self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width()/2), position[1]))
+        self.WINDOW.blit(text_black, (
+        round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)), position[1] + round(fontsize / 25)))
+        self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width() / 2), position[1]))
+
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
         self.text('toonaround', 70, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
@@ -54,6 +64,7 @@ class Game:
     def connect(self):
         self.connected = True
         pass
+
     def update(self):
         if self.keys.get(pygame.K_a):
             self.player.move_left()
@@ -70,7 +81,7 @@ class Game:
         for fireball in self.player.fireballs:
             fireball.move()
         # Life Bar
-        self.BG.blit(self.player.life_image, (40,60))
+        self.BG.blit(self.player.life_image, (40, 60))
         if self.tmp == 1:
             shape_surf = pygame.Surface(pygame.Rect((120, 66, 4 * self.player.life, 40)).size, pygame.SRCALPHA)
             pygame.draw.rect(shape_surf, self.red, shape_surf.get_rect())
@@ -79,11 +90,13 @@ class Game:
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
     def menu_update(self):
-        self.WINDOW.blit(self.title_text2, (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
+        self.WINDOW.blit(self.title_text2,
+                         (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
         self.WINDOW.blit(self.title_text1, (round(self.W / 2 - self.title_text1.get_width() / 2), round(self.H / 2.6)))
         if self.show_prompt:
-            self.WINDOW.blit(self.prompt2, (round(self.W/2-self.prompt2.get_width()/2-3), round(self.H/1.55+3)))
-            self.WINDOW.blit(self.prompt1, (round(self.W/2-self.prompt1.get_width()/2), round(self.H/1.55)))
+            self.WINDOW.blit(self.prompt2,
+                             (round(self.W / 2 - self.prompt2.get_width() / 2 - 3), round(self.H / 1.55 + 3)))
+            self.WINDOW.blit(self.prompt1, (round(self.W / 2 - self.prompt1.get_width() / 2), round(self.H / 1.55)))
 
         if pygame.time.get_ticks() - self.time > 500:
             self.show_prompt = not self.show_prompt
