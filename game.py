@@ -49,7 +49,7 @@ class Game:
         self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width()/2), position[1]))
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
-        self.text('toonaround', 30, 'nothing', (200, 30))
+        self.text('toonaround', 70, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
 
     def connect(self):
         self.connected = True
