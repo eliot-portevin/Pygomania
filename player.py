@@ -5,7 +5,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, W, H, x, y):
         super().__init__()
         self.idle_sheet = Spritesheet('media/Mage_animation/idle-sheet.png')
-        self.move_sheet = Spritesheet('media/spritesheet_move.png')
+        self.move_sheet = Spritesheet('media/Mage_animation/move-sheet.png')
         self.punch_sheet = Spritesheet("media/Mage_animation/q_spell-sheet.png")
         self.idle_right_sprites = []
         self.idle_left_sprites = []
@@ -18,9 +18,11 @@ class Player(pygame.sprite.Sprite):
             sprite = pygame.transform.scale(sprite,(256,256))
             self.idle_right_sprites.append(sprite)
             self.idle_left_sprites.append(pygame.transform.flip(sprite,True,False))
-        for row in range(8):
-            sprite = self.move_sheet.get_sprites(row*47,0,47,53,0,0,47,53)
-            self.move_right_sprites.append(pygame.transform.scale(sprite, (120, 135)))
+        for row in range(1,9):
+            sprite = self.move_sheet.parse_sprites(f"move{row}.png")
+            sprite = pygame.transform.scale(sprite, (256, 256))
+            self.move_right_sprites.append(sprite)
+            self.move_left_sprites.append(pygame.transform.flip(sprite, True, False))
         for row in range(8):
             sprite = self.move_sheet.get_sprites(row*47,0,47,53,0,0,47,53)
             sprite = pygame.transform.flip(sprite,True,False)

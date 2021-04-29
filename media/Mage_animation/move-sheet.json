@@ -1,0 +1,83 @@
+{ "frames": {
+   "move1.png": {
+    "frame": { "x": 0, "y": 0, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "move2.png": {
+    "frame": { "x": 59, "y": 0, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "move3.png": {
+    "frame": { "x": 118, "y": 0, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "move4.png": {
+    "frame": { "x": 0, "y": 54, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "move5.png": {
+    "frame": { "x": 59, "y": 54, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "move6.png": {
+    "frame": { "x": 0, "y": 54, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "move7.png": {
+    "frame": { "x": 118, "y": 0, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   "move8.png": {
+    "frame": { "x": 59, "y": 0, "w": 59, "h": 54 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 7, "w": 59, "h": 54 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.27",
+  "image": "move-sheet.png",
+  "format": "I8",
+  "size": { "w": 177, "h": 108 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

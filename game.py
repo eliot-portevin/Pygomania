@@ -60,7 +60,7 @@ class Game:
         if self.keys.get(pygame.K_d):
             self.player.move_right()
         if self.keys.get(pygame.K_s):
-            self.player.fall_down
+            self.player.fall_down()
 
         self.player.gravity()
         self.player.animate()
