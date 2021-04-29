@@ -1,10 +1,11 @@
-import pygame, os
-from spritesheet import Spritesheet
+import pygame
+
 from fireball import Fireball
+from spritesheet import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, W, H, x, y,character):
+    def __init__(self, W, H, x, y, character):
         super().__init__()
         self.idle_sheet = Spritesheet(f'{character[1]}idle-sheet.png')
         self.move_sheet = Spritesheet(f'{character[1]}move-sheet.png')
@@ -39,25 +40,25 @@ class Player(pygame.sprite.Sprite):
         self.ultimate_right_sprites = []
         self.ultimate_left_sprites = []
 
-        for row in range(1,9):
+        for row in range(1, 9):
             sprite = self.idle_sheet.parse_sprites(f"idle{row}.png")
-            sprite = pygame.transform.scale(sprite,(256,256))
+            sprite = pygame.transform.scale(sprite, (256, 256))
             self.idle_right_sprites.append(sprite)
-            self.idle_left_sprites.append(pygame.transform.flip(sprite,True,False))
-        for row in range(1,9):
+            self.idle_left_sprites.append(pygame.transform.flip(sprite, True, False))
+        for row in range(1, 9):
             sprite = self.move_sheet.parse_sprites(f"move{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
             self.move_right_sprites.append(sprite)
             self.move_left_sprites.append(pygame.transform.flip(sprite, True, False))
         for row in range(8):
-            sprite = self.move_sheet.get_sprites(row*47,0,47,53,0,0,47,53)
-            sprite = pygame.transform.flip(sprite,True,False)
+            sprite = self.move_sheet.get_sprites(row * 47, 0, 47, 53, 0, 0, 47, 53)
+            sprite = pygame.transform.flip(sprite, True, False)
             self.move_left_sprites.append(pygame.transform.scale(sprite, (120, 135)))
-        for row in range(1,9):
+        for row in range(1, 9):
             sprite = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
             self.spell_right_sprites.append(sprite)
-            self.spell_left_sprites.append(pygame.transform.flip(sprite,True,False))
+            self.spell_left_sprites.append(pygame.transform.flip(sprite, True, False))
         self.punching = False
         self.jumping = False
         self.double_jumping = False
@@ -71,7 +72,7 @@ class Player(pygame.sprite.Sprite):
         self.moving_right = False
         self.fireballs = pygame.sprite.Group()
         self.image = self.idle_right_sprites[0]
-        self.image = pygame.transform.scale(self.image,(256,256))
+        self.image = pygame.transform.scale(self.image, (256, 256))
         self.player_left = self.image
         self.player_right = pygame.transform.flip(self.player_left, True, False)
         self.rect = self.image.get_rect()
@@ -80,6 +81,7 @@ class Player(pygame.sprite.Sprite):
         self.life_image = pygame.image.load('media/life.png')
         self.life_image = pygame.transform.scale(self.life_image, (57, 57))
         self.tmp = 90
+
     def animate(self):
         if self.punching:
             self.tmp = 40
@@ -88,7 +90,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.tmp = 150
         if pygame.time.get_ticks() - self.time > self.tmp:
-            self.key = (self.key+1) % 8
+            self.key = (self.key + 1) % 8
             if self.punching:
                 if self.moving_right:
                     self.image = self.spell_right_sprites[self.key]
@@ -122,7 +124,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= 5
 
     def gravity(self):
-        if self.jumping and (self.velocity < 0 or self.rect.bottom < round(215/216*self.H)):
+        if self.jumping and (self.velocity < 0 or self.rect.bottom < round(215 / 216 * self.H)):
             self.velocity += self.acceleration
             self.rect.y += self.velocity
         else:
