@@ -59,6 +59,7 @@ class Player(pygame.sprite.Sprite):
             sprite = pygame.transform.scale(sprite, (256, 256))
             self.spell_right_sprites.append(sprite)
             self.spell_left_sprites.append(pygame.transform.flip(sprite, True, False))
+
         self.punching = False
         self.jumping = False
         self.double_jumping = False
@@ -67,7 +68,7 @@ class Player(pygame.sprite.Sprite):
         self.W = W
         self.H = H
         self.velocity = 0
-        self.acceleration = 0.6
+        self.acceleration = 0.8
         self.moving = False
         self.moving_right = False
         self.fireballs = pygame.sprite.Group()
@@ -115,35 +116,35 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.move_right_sprites[self.key]
             self.time = pygame.time.get_ticks()
 
-    def move_right(self):
+    def move_right(self,dt):
         if self.rect.x < self.W - self.image.get_width():
-            self.rect.x += 5
+            self.rect.x += 5*dt
 
-    def move_left(self):
+    def move_left(self,dt):
         if self.rect.x > 0:
-            self.rect.x -= 5
+            self.rect.x -= 5*dt
 
-    def gravity(self):
+    def gravity(self,dt):
         if self.jumping and (self.velocity < 0 or self.rect.bottom < round(215 / 216 * self.H)):
-            self.velocity += self.acceleration
-            self.rect.y += self.velocity
+            self.velocity += self.acceleration * dt
+            self.rect.y += self.velocity * dt
         else:
             self.velocity = 0
             self.jumping = False
             self.double_jumping = False
 
-    def jump(self):
+    def jump(self,dt):
         if not self.jumping:
             self.jumping = True
         elif not self.double_jumping:
             self.double_jumping = True
 
         self.velocity = -12
-        self.rect.y += self.velocity
+        self.rect.y += self.velocity * dt
 
     def fall_down(self):
         if self.jumping or self.double_jumping:
-            self.velocity += 12
+            self.velocity += 10
 
     def check_height(self):
         if self.rect.bottom >= round(215 / 216 * self.H):

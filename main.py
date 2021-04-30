@@ -1,4 +1,5 @@
 import pygame
+import time
 from game import Game
 
 pygame.init()
@@ -21,7 +22,10 @@ def main():
     clock = pygame.time.Clock()
 
     while playing:
+
         clock.tick(fps)
+        dt = (time.time() - game.prev_time)*50
+        game.prev_time = time.time()
         win.blit(BG, (0, 0))
         if not game.connected:
             game.connect()
@@ -33,14 +37,14 @@ def main():
             game.main_menu_func()
 
         else:
-            game.update()
+            game.update(dt)
 
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 game.keys[event.key] = True
-                if event.key == pygame.K_w and not (game.player.jumping and game.player.double_jumping):
-                    game.player.jump()
+                if event.key == pygame.K_w and not game.player.double_jumping:
+                    game.player.jump(dt)
                 if event.key == pygame.K_q:
                     if not game.player.punching:
                         game.player.punching = True

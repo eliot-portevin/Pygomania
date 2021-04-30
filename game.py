@@ -1,4 +1,4 @@
-import pygame
+import pygame, time
 from player import Player
 
 
@@ -46,7 +46,7 @@ class Game:
         self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, self.H - 180, 230, 85)
 
         self.mouse_rect = pygame.Rect(0, 0, 1, 1)
-
+        self.prev_time = time.time()
         # Colours
         self.white = (255, 255, 255)
         self.button_colour = (217, 215, 126, 140)
@@ -72,7 +72,7 @@ class Game:
         self.WINDOW.blit(self.BG, (0, 0))
         self.text('toonaround', 90, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
         self.mouse_rect.x, self.mouse_rect.y = pygame.mouse.get_pos()
-        #First player line
+        # First player line
         for i in range(3):
             s = pygame.Surface((200, 130), pygame.SRCALPHA)
             s.fill(self.button_colour)
@@ -83,12 +83,12 @@ class Game:
             if self.mouse_rect.colliderect(rect):
                 self.WINDOW.blit(s, (x, y))
             self.text('toonaround', 30, self.players[i], (150 + s.get_width() / 2, y + s.get_height() + 5))
+            x = self.W - (150 + s.get_width())
 
-        #Second line
+        # Second line
         for i in range(3):
             s = pygame.Surface((200, 130), pygame.SRCALPHA)
             s.fill(self.button_colour)
-            x = self.W - (150 + s.get_width())
             y = round(self.H / 5 * (i + 1.5))
             self.WINDOW.blit(s, (x, y))
             rect = pygame.Rect(x, y, 200, 130)
@@ -96,7 +96,7 @@ class Game:
                 self.WINDOW.blit(s, (x, y))
             self.text('toonaround', 30, self.players[i + 3], (self.W - (150 + s.get_width() / 2), y + s.get_height() + 5))
 
-        #Start button
+        # Start button
         self.WINDOW.blit(self.start_button, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
 
         if self.mouse_rect.colliderect(self.start_rect):
@@ -106,21 +106,23 @@ class Game:
         self.connected = True
         pass
 
-    def update(self):
+    def update(self,dt):
+
         if self.keys.get(pygame.K_a):
-            self.player.move_left()
+            self.player.move_left(dt)
         if self.keys.get(pygame.K_d):
-            self.player.move_right()
+            self.player.move_right(dt)
         if self.keys.get(pygame.K_s):
             self.player.fall_down()
 
-        self.player.gravity()
+        if self.player.jumping:
+            self.player.gravity(dt)
         self.player.animate()
         self.player.check_height()
         self.player_sprites.draw(self.WINDOW)
         self.player.fireballs.draw(self.WINDOW)
         for fireball in self.player.fireballs:
-            fireball.move()
+            fireball.move(dt)
         # Life Bar
         self.BG.blit(self.player.life_image, (40, 60))
         if self.tmp == 1:
