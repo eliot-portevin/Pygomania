@@ -19,6 +19,8 @@ class Game:
         # Players
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = 1
+
+        self.mage_text = 'The Mage is '
         # Number, Folder
         self.attacks_dict = {1: [1, 'media/Mage_animation/'], 2: [2, 'media/Boxer_animation/'],
                              3: [3, 'media/Dwarf_animation/'],
@@ -51,6 +53,7 @@ class Game:
         self.white = (255, 255, 255)
         self.button_colour = (217, 215, 126, 140)
         self.black = (0, 0, 0)
+        self.black_transparent = (0, 0, 0, 150)
         self.green = (0, 255, 0)
         self.red = (255, 0, 0, 180)
         # Temporary values
@@ -63,11 +66,13 @@ class Game:
         font = pygame.font.SysFont(font, fontsize)
         text_white = font.render(text, True, (255, 255, 255))
         text_black = font.render(text, True, (0, 0, 0))
-        self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)), position[1] + round(fontsize / 25)))
+        self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)),
+                                      position[1] + round(fontsize / 25)))
         self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width() / 2), position[1]))
         n = text_white.get_width()
         return n
 
+    # noinspection PyUnboundLocalVariable
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
         self.text('toonaround', 90, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
@@ -94,7 +99,8 @@ class Game:
             rect = pygame.Rect(x, y, 200, 130)
             if self.mouse_rect.colliderect(rect):
                 self.WINDOW.blit(s, (x, y))
-            self.text('toonaround', 30, self.players[i + 3], (self.W - (150 + s.get_width() / 2), y + s.get_height() + 5))
+            self.text('toonaround', 30, self.players[i + 3], (self.W - (150 + s.get_width() / 2), y +
+                                                              s.get_height() + 5))
 
         # Start button
         self.WINDOW.blit(self.start_button, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
@@ -102,11 +108,15 @@ class Game:
         if self.mouse_rect.colliderect(self.start_rect):
             self.WINDOW.blit(self.start_button_hovering, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
 
+        # Information box
+        info_box = pygame.Surface((450, 350), pygame.SRCALPHA)
+        info_box.fill(self.black_transparent)
+        self.WINDOW.blit(info_box, (self.W / 2 - info_box.get_width() / 2, self.H / 3))
+
     def connect(self):
         self.connected = True
-        pass
 
-    def update(self,dt):
+    def update(self, dt):
 
         if self.keys.get(pygame.K_a):
             self.player.move_left(dt)
