@@ -20,7 +20,8 @@ class Game:
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = 1
 
-        self.mage_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel maximus lorem. Pellentesque iaculis molestie leo at placerat.'
+        self.mage_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel maximus lorem. ' \
+                         'Pellentesque iaculis molestie leo at placerat. '
         self.info_font = pygame.font.SysFont('toonaround', 20)
 
         # Number, Folder
@@ -75,7 +76,6 @@ class Game:
         return n
 
     def box_text(self, surface, font, x_start, x_end, y_start, text, colour):
-        x_word = 0
         x = x_start
         y = y_start
         words = text.split(' ')
