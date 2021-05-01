@@ -20,7 +20,7 @@ class Game:
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = 1
 
-        self.mage_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel maximus lorem. Pellentesque iaculis molestie leo at placerat. In scelerisque, dolor et suscipit condimentum, tellus ligula finibus mi, vitae semper massa magna in erat. Curabitur ac mi et nulla interdum porttitor. In hac habitasse platea dictumst. Ut sagittis nisl interdum ex pharetra, at aliquet lacus scelerisque. Aliquam condimentum turpis ac dui fringilla porta. Mauris placerat efficitur lorem vitae placerat. Donec vel hendrerit dui, quis viverra leo. Curabitur bibendum lectus id congue scelerisque. Aenean vel est ut justo elementum bibendum. Fusce ornare, augue vitae rutrum dapibus, lacus lorem maximus lacus, in ornare turpis tellus nec lorem. Donec sagittis sapien a maximus auctor. Integer facilisis sem tempus rhoncus vestibulum. Quisque eleifend quis ante eu pulvinar. Aliquam nibh magna, sodales ac iaculis ut, iaculis vel est. Nullam sit amet neque in tellus molestie interdum. Nam rutrum lorem lorem, egestas malesuada neque ornare eget. Sed tortor felis, placerat sed velit et, ultricies vehicula lacus. Sed quis urna gravida, bibendum elit vel, mattis dolor. Sed ultrices, nunc sit amet cursus fringilla, neque leo pharetra libero, at maximus tellus nibh vel nulla. Praesent auctor scelerisque sem eu gravida. Nunc a nisl euismod, elementum dui quis, interdum nulla. Nulla pharetra arcu at ante congue efficitur. Nunc venenatis dapibus ante id eleifend. Integer id elit egestas, dictum mauris ac, lobortis enim. Ut mollis lorem fringilla dolor tempor eleifend. Curabitur lorem massa, accumsan a turpis et, rutrum vulputate massa. Suspendisse elementum ullamcorper justo non porta. Nunc tincidunt vel urna at ullamcorper. Suspendisse augue leo, mattis ut nisl a, cursus eleifend justo. Etiam eget accumsan nunc, vel tristique metus. Aliquam scelerisque accumsan diam, egestas varius felis consectetur ac. Etiam tincidunt hendrerit leo suscipit blandit. Donec at dignissim purus, sed hendrerit erat. Maecenas lacus magna, porta vel ante ut, facilisis blandit.'
+        self.mage_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel maximus lorem. Pellentesque iaculis molestie leo at placerat.'
         self.info_font = pygame.font.SysFont('toonaround', 20)
 
         # Number, Folder
@@ -74,21 +74,21 @@ class Game:
         n = text_white.get_width()
         return n
 
-    def box_text(self, font, x_start, x_end, y_start, text):
+    def box_text(self, surface, font, x_start, x_end, y_start, text, colour):
         x_word = 0
         x = x_start
         y = y_start
         words = text.split(' ')
 
         for word in words:
-            word_t = self.info_font.render(word, True, self.white)
+            word_t = font.render(word, True, colour)
             if word_t.get_width() + x <= x_end:
-                self.WINDOW.blit(word_t, (x, y))
+                surface.blit(word_t, (x, y))
                 x += word_t.get_width() + 2
             else:
                 y += word_t.get_height() + 4
                 x = x_start
-                self.WINDOW.blit(word_t, (x, y))
+                surface.blit(word_t, (x, y))
                 x += word_t.get_width() + 2
 
     # noinspection PyUnboundLocalVariable
@@ -133,7 +133,7 @@ class Game:
         self.WINDOW.blit(info_box, (self.W / 2 - info_box.get_width() / 2, self.H / 3))
 
         x_start = self.W / 2 - info_box.get_width() / 2 + 10
-        self.box_text(self.info_font, x_start, x_start + 430, self.H / 3 + 10, self.mage_text)
+        self.box_text(self.WINDOW, self.info_font, x_start, x_start + 430, self.H / 3 + 10, self.mage_text, self.white)
 
     def connect(self):
         self.connected = True
