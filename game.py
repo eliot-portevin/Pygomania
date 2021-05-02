@@ -18,20 +18,22 @@ class Game:
 
         # Players
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
-        self.character = 1
-
-        self.mage_text = 'The Mage is an old wizard. Over the years, he has mastered many techniques to take ' \
-                         'out ennemies in excruciating pain. These include throwing fireballs, and letting lightning' \
-                         'fall from the sky. He also has the ability to regenerate his health when he isnt attacked.'
-        self.mage_stats = ['70', '5', '15', '25']
-        self.mage_stats_names = ['Health', 'Punch', 'Fireball', 'Lightning']
+        self.character = 0
+        self.descriptions = open('media/descriptions.txt','r').readlines()
+        self.stats = [['70', '5', '15', '25'],['85', '8', '15', '30'],['10', '1', '1', '2'],['70', '5', '15', '25'],
+                      ['70', '5', '15', '25'],['70', '5', '15', '25']]
+        self.stats_max = [100,10,20,35]
+        self.stats_names = [['Health', 'Punch', 'Fireball', 'Lightning'],['Health','Punch','Spring Punch', 'Air KO'],
+                            ['Health','Punch','Axe', 'Rage'],['Health','Punch','Words', 'Bear'],
+                            ['Health','Punch','Snake', 'Stone'],['Health','Punch','Racket', 'Smash']]
         self.info_font = pygame.font.SysFont('toonaround', 18)
-
+        self.menu_characters_dict = {}
+        for i in range(6):
+            self.menu_characters_dict[self.players[i]] = [self.descriptions[i][:-1],self.stats[i],self.stats_names[i]]
         # Number, Folder
-        self.attacks_dict = {1: [1, 'media/Mage_animation/'], 2: [2, 'media/Boxer_animation/'],
-                             3: [3, 'media/Dwarf_animation/'],
-                             4: [4, 'media/Soldier_animation/'], 5: [5, 'media/Gorgone_animation/'],
-                             6: [6, 'media/Tenniswoman_animation/']}
+        self.attacks_dict = [[1, 'media/Mage_animation/'], [2, 'media/Boxer_animation/'],
+                             [3, 'media/Dwarf_animation/'], [4, 'media/Soldier_animation/'],
+                             [5, 'media/Gorgone_animation/'], [6, 'media/Tenniswoman_animation/']]
 
         self.player = Player(W, H, round(W / 2), round(203 / 216 * H), self.attacks_dict[self.character])
         self.player_sprites = pygame.sprite.Group()
@@ -99,11 +101,11 @@ class Game:
         x_stat = self.W / 2 + 180
         y = self.H / 3 + 20
         for i in range(4):
-            stat_name = self.info_font.render(str(self.mage_stats_names[i]), True, self.white)
-            stat = self.info_font.render(str(self.mage_stats[i]), True, self.white)
+            stat_name = self.info_font.render(str(self.stats_names[self.character][i]), True, self.white)
+            stat = self.info_font.render(str(self.stats[self.character][i]), True, self.white)
             self.WINDOW.blit(stat, (x_stat, y))
             self.WINDOW.blit(stat_name, (x_name, y))
-            pygame.draw.rect(self.WINDOW, self.white, (self.W / 2 - 100, y + 5, int(self.mage_stats[i]) * 3, 10))
+            pygame.draw.rect(self.WINDOW, self.white, (self.W / 2 - 100, y + 5, int(self.stats[self.character][i])*300/self.stats_max[i], 10))
             y += 40
     # noinspection PyUnboundLocalVariable
     def main_menu_func(self):
@@ -120,6 +122,7 @@ class Game:
             rect = pygame.Rect(x, y, 200, 130)
             if self.mouse_rect.colliderect(rect):
                 self.WINDOW.blit(s, (x, y))
+                self.character = i
             self.text('toonaround', 30, self.players[i], (150 + s.get_width() / 2, y + s.get_height() + 5))
             x = self.W - (150 + s.get_width())
 
@@ -131,6 +134,7 @@ class Game:
             self.WINDOW.blit(s, (x, y))
             rect = pygame.Rect(x, y, 200, 130)
             if self.mouse_rect.colliderect(rect):
+                self.character = i +3
                 self.WINDOW.blit(s, (x, y))
             self.text('toonaround', 30, self.players[i + 3], (self.W - (150 + s.get_width() / 2), y +
                                                               s.get_height() + 5))
@@ -147,7 +151,7 @@ class Game:
         self.WINDOW.blit(info_box, (self.W / 2 - info_box.get_width() / 2, self.H / 3))
 
         x_start = self.W / 2 - info_box.get_width() / 2 + 10
-        self.box_text(self.WINDOW, self.info_font, x_start, x_start + 430, self.H / 1.7 -5, self.mage_text, self.white)
+        self.box_text(self.WINDOW, self.info_font, x_start, x_start + 430, self.H / 1.7 -5, self.descriptions[self.character][:-1], self.white)
 
         self.stats_text()
     def connect(self):
