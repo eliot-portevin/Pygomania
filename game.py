@@ -1,6 +1,6 @@
 import pygame, time
 from player import Player
-
+from platforms import Platform
 
 class Game:
     def __init__(self, win, W, H, BG):
@@ -16,6 +16,13 @@ class Game:
         self.main_menu = False
         self.keys = {}
 
+        # Platforms
+        self.platforms = pygame.sprite.Group()
+        surface = pygame.surface.Surface((200, 50), pygame.SRCALPHA)
+        surface.fill((0, 0, 0, 150))
+        self.platform_1 = Platform(surface, pygame.rect.Rect(500, 700, 200, 50))
+        self.platforms.add(self.platform_1)
+
         # Players
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = 0
@@ -26,16 +33,17 @@ class Game:
         self.stats_names = [['Health', 'Punch', 'Fireball', 'Lightning'],['Health','Punch','Spring Punch', 'Air KO'],
                             ['Health','Punch','Axe', 'Rage'],['Health','Punch','Words', 'Bear'],
                             ['Health','Punch','Snake', 'Stone'],['Health','Punch','Racket', 'Smash']]
+
         self.info_font = pygame.font.SysFont('toonaround', 18)
         self.menu_characters_dict = {}
         for i in range(6):
             self.menu_characters_dict[self.players[i]] = [self.descriptions[i][:-1],self.stats[i],self.stats_names[i]]
         # Number, Folder
-        self.attacks_dict = [[1, 'media/Mage_animation/'], [2, 'media/Boxer_animation/'],
-                             [3, 'media/Dwarf_animation/'], [4, 'media/Soldier_animation/'],
-                             [5, 'media/Gorgone_animation/'], [6, 'media/Tenniswoman_animation/']]
+        self.attacks_dict = ['media/Mage_animation/', 'media/Boxer_animation/',
+                             'media/Dwarf_animation/', 'media/Soldier_animation/',
+                             'media/Gorgone_animation/', 'media/Tenniswoman_animation/']
 
-        self.player = Player(W, H, round(W / 2), round(203 / 216 * H), self.attacks_dict[self.character])
+        self.player = Player(W, H, round(W / 2), round(203 / 216 * H), self.attacks_dict[self.character],self.platforms)
         self.player_sprites = pygame.sprite.Group()
         self.player_sprites.add(self.player)
 
@@ -57,6 +65,8 @@ class Game:
 
         self.mouse_rect = pygame.Rect(0, 0, 1, 1)
         self.prev_time = time.time()
+
+
         # Colours
         self.white = (255, 255, 255)
         self.button_colour = (217, 215, 126, 140)
@@ -171,6 +181,7 @@ class Game:
         self.player.animate()
         self.player.check_height()
         self.player_sprites.draw(self.WINDOW)
+        self.platforms.draw(self.WINDOW)
         self.player.fireballs.draw(self.WINDOW)
         for fireball in self.player.fireballs:
             fireball.move(dt)

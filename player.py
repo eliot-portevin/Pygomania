@@ -5,10 +5,10 @@ from spritesheet import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, W, H, x, y, character):
+    def __init__(self, W, H, x, y, character,platforms):
         super().__init__()
-        self.idle_sheet = Spritesheet(f'{character[1]}idle-sheet.png')
-        self.move_sheet = Spritesheet(f'{character[1]}move-sheet.png')
+        self.idle_sheet = Spritesheet(f'{character}idle-sheet.png')
+        self.move_sheet = Spritesheet(f'{character}move-sheet.png')
         self.crouched_sheet = None
         self.jump_sheet = None
         self.slight_hit_sheet = None
@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.jumping_attack_sheet = None
         self.falling_attack_sheet = None
         self.crouched_attack = None
-        self.spell_sheet = Spritesheet(f"{character[1]}q_spell-sheet.png")
+        self.spell_sheet = Spritesheet(f"{character}q_spell-sheet.png")
         self.ultimate_sheet = None
 
         self.idle_right_sprites = []
@@ -63,15 +63,18 @@ class Player(pygame.sprite.Sprite):
         self.punching = False
         self.jumping = False
         self.double_jumping = False
-        self.time = pygame.time.get_ticks()
-        self.key = 1
+        self.moving = False
+        self.moving_right = False
+
         self.W = W
         self.H = H
         self.velocity = 0
         self.acceleration = 0.8
-        self.moving = False
-        self.moving_right = False
+        self.key = 1
+        self.time = pygame.time.get_ticks()
+        self.platforms = platforms
         self.fireballs = pygame.sprite.Group()
+
         self.image = self.idle_right_sprites[0]
         self.image = pygame.transform.scale(self.image, (256, 256))
         self.player_left = self.image
@@ -123,11 +126,14 @@ class Player(pygame.sprite.Sprite):
     def move_left(self,dt):
         if self.rect.x > 0:
             self.rect.x -= 5*dt
-
+    def check_collision(self,sprite,group):
+        return pygame.sprite.spritecollide(sprite,group,False,False)
     def gravity(self,dt):
         if self.jumping and (self.velocity < 0 or self.rect.bottom < round(215 / 216 * self.H)):
-            self.velocity += self.acceleration * dt
-            self.rect.y += self.velocity * dt
+            if not (self.velocity > 0 and self.check_collision(self,self.platforms)):
+                self.velocity += self.acceleration * dt
+                self.rect.y += self.velocity * dt
+
         else:
             self.velocity = 0
             self.jumping = False
