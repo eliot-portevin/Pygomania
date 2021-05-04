@@ -111,16 +111,20 @@ class Player(pygame.sprite.Sprite):
 
     def move_right(self, dt):
         if self.rect.x < self.W - self.image.get_width():
-            self.rect.x += 5 * dt
+            print(f"RIGHT = {dt}")
+            self.rect.x += round(5 * dt)
 
     def move_left(self, dt):
         if self.rect.x > 0:
-            self.rect.x -= 5 * dt
+            print(f"LEFT = {dt}")
+            self.rect.x -= round(5 * dt)
 
     def jump(self, dt):
+        print("jumping")
         if not self.jumping:
             self.jumping = True
         elif not self.double_jumping:
+            print("DOUBLE")
             self.double_jumping = True
 
         self.velocity = -12
@@ -128,7 +132,7 @@ class Player(pygame.sprite.Sprite):
 
     def fall_down(self):
         if self.jumping or self.double_jumping:
-            self.velocity += 10
+            self.velocity += 5
 
     def gravity(self, dt):
         self.velocity += self.acceleration * dt
@@ -139,13 +143,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += 1
         collisions = self.get_hits(platforms)
         for tile in collisions:
-            print(self.velocity,tile.rect.y - self.rect.bottom)
-            if self.velocity > 0 and 0 <= ( self.rect.bottom - tile.rect.y ) < 50:
+            if self.velocity > 0 and 0 <= (self.rect.bottom - tile.rect.y ) < 50:
                 self.jumping = False
                 self.double_jumping = False
                 self.velocity = 0
                 self.rect.bottom = tile.rect.top
-        self.rect.y -= 1
 
     def get_hits(self, sprite_group):
         return pygame.sprite.spritecollide(self, sprite_group, False)
