@@ -21,7 +21,10 @@ class Game:
         surface = pygame.surface.Surface((200, 50), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 150))
         self.platform_1 = Platform(surface, pygame.rect.Rect(500, 400, 200, 50))
-        self.platforms.add(self.platform_1)
+        surface = pygame.surface.Surface((W,round(H*0.0602)),pygame.SRCALPHA)
+        surface.set_colorkey((0,0,0))
+        self.ground = Platform(surface,pygame.rect.Rect(0,round(H*0.9398),W,H*0.0602))
+        self.platforms.add(self.platform_1,self.ground)
 
         # Players
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
@@ -43,7 +46,7 @@ class Game:
                              'media/Dwarf_animation/', 'media/Soldier_animation/',
                              'media/Gorgone_animation/', 'media/Tenniswoman_animation/']
 
-        self.player = Player(W, H, round(W / 2), round(203 / 216 * H), self.attacks_dict[self.character],self.platforms)
+        self.player = Player(W, H, round(W / 2), round(23 / 216 * H), self.attacks_dict[self.character],self.platforms)
         self.player_sprites = pygame.sprite.Group()
         self.player_sprites.add(self.player)
 
@@ -117,7 +120,7 @@ class Game:
             self.WINDOW.blit(stat_name, (x_name, y))
             pygame.draw.rect(self.WINDOW, self.white, (self.W / 2 - 100, y + 5, int(self.stats[self.character][i])*300/self.stats_max[i], 10))
             y += 40
-    # noinspection PyUnboundLocalVariable
+
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
         self.text('toonaround', 90, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
@@ -176,10 +179,9 @@ class Game:
         if self.keys.get(pygame.K_s):
             self.player.fall_down()
 
-        if self.player.jumping:
-            self.player.gravity(dt)
+        self.player.gravity(dt)
+        self.player.check_collision_y(self.platforms)
         self.player.animate()
-        self.player.check_height()
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
         self.player.fireballs.draw(self.WINDOW)

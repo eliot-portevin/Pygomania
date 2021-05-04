@@ -5,9 +5,9 @@ from spritesheet import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, W, H, x, y, character,platforms):
+    def __init__(self, W, H, x, y, character, platforms):
         super().__init__()
-        self.idle_sheet = Spritesheet(f'{character}idle-sheet.png')
+        self.idle_sheet = Spritesheet(f'{character}mage_idle.png')
         self.move_sheet = Spritesheet(f'{character}move-sheet.png')
         self.crouched_sheet = None
         self.jump_sheet = None
@@ -40,21 +40,21 @@ class Player(pygame.sprite.Sprite):
         self.ultimate_right_sprites = []
         self.ultimate_left_sprites = []
 
-        for row in range(1, 9):
-            sprite,duration = self.idle_sheet.parse_sprites(f"idle{row}.png")
+        for row in range(1, 3):
+            sprite, duration = self.idle_sheet.parse_sprites(f"mage_idle{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
-            self.idle_right_sprites.append([sprite,duration])
-            self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False),duration])
+            self.idle_right_sprites.append([sprite, duration])
+            self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
         for row in range(1, 9):
-            sprite,duration = self.move_sheet.parse_sprites(f"move{row}.png")
+            sprite, duration = self.move_sheet.parse_sprites(f"move{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
-            self.move_right_sprites.append([sprite,duration])
-            self.move_left_sprites.append([pygame.transform.flip(sprite, True, False),duration])
+            self.move_right_sprites.append([sprite, duration])
+            self.move_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
         for row in range(1, 9):
-            sprite,duration = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
+            sprite, duration = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
-            self.spell_right_sprites.append([sprite,duration])
-            self.spell_left_sprites.append([pygame.transform.flip(sprite, True, False),duration])
+            self.spell_right_sprites.append([sprite, duration])
+            self.spell_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
 
         self.punching = False
         self.jumping = False
@@ -65,13 +65,13 @@ class Player(pygame.sprite.Sprite):
         self.W = W
         self.H = H
         self.velocity = 0
-        self.acceleration = 0.5
+        self.acceleration = 0.3
         self.key = 1
         self.time = pygame.time.get_ticks()
         self.platforms = platforms
         self.fireballs = pygame.sprite.Group()
 
-        self.image = self.idle_right_sprites[0]
+        self.image = self.idle_right_sprites[0][0]
         self.image = pygame.transform.scale(self.image, (256, 256))
         self.player_left = self.image
         self.player_right = pygame.transform.flip(self.player_left, True, False)
@@ -84,12 +84,12 @@ class Player(pygame.sprite.Sprite):
 
     def animate(self):
         if pygame.time.get_ticks() - self.time > self.tmp:
-            self.key = (self.key + 1) % 8
+            self.key = (self.key + 1) % 2
             if self.punching:
                 if self.moving_right:
-                    self.image = self.spell_right_sprites[self.key]
+                    self.image = self.spell_right_sprites[self.key][0]
                 else:
-                    self.image = self.spell_left_sprites[self.key]
+                    self.image = self.spell_left_sprites[self.key][0]
                 if self.key == 7:
                     self.punching = False
                     if self.moving_right:
@@ -100,42 +100,24 @@ class Player(pygame.sprite.Sprite):
 
             elif not self.moving:
                 if self.moving_right:
-                    self.image = self.idle_right_sprites[self.key]
+                    self.image = self.idle_right_sprites[self.key][0]
                 else:
-                    self.image = self.idle_left_sprites[self.key]
+                    self.image = self.idle_left_sprites[self.key][0]
             elif not self.moving_right:
-                self.image = self.move_left_sprites[self.key]
+                self.image = self.move_left_sprites[self.key][0]
             else:
-                self.image = self.move_right_sprites[self.key]
+                self.image = self.move_right_sprites[self.key][0]
             self.time = pygame.time.get_ticks()
 
-    def move_right(self,dt):
+    def move_right(self, dt):
         if self.rect.x < self.W - self.image.get_width():
-            self.rect.x += 5*dt
+            self.rect.x += 5 * dt
 
-    def move_left(self,dt):
+    def move_left(self, dt):
         if self.rect.x > 0:
-            self.rect.x -= 5*dt
+            self.rect.x -= 5 * dt
 
-    def check_plaform_collision(self,sprite,group):
-        sprite_list = pygame.sprite.spritecollide(sprite,group,False,False)
-        if sprite_list:
-            return sprite_list[0].rect.y
-        return False
-
-    def gravity(self,dt):
-        if self.jumping and (self.velocity < 0 or self.rect.bottom < round(215 / 216 * self.H)):
-            sprites = self.check_plaform_collision(self, self.platforms)
-            if sprites and self.rect.bottom < sprites:
-                self.velocity += self.acceleration * dt
-                self.rect.y += self.velocity * dt
-
-        else:
-            self.velocity = 0
-            self.jumping = False
-            self.double_jumping = False
-
-    def jump(self,dt):
+    def jump(self, dt):
         if not self.jumping:
             self.jumping = True
         elif not self.double_jumping:
@@ -148,6 +130,22 @@ class Player(pygame.sprite.Sprite):
         if self.jumping or self.double_jumping:
             self.velocity += 10
 
-    def check_height(self):
-        if self.rect.bottom >= round(215 / 216 * self.H):
-            self.rect.bottom = round(215 / 216 * self.H)
+    def gravity(self, dt):
+        self.velocity += self.acceleration * dt
+        self.rect.y += self.velocity * dt
+
+    def check_collision_y(self, platforms):
+        self.jumping = True
+        self.rect.y += 1
+        collisions = self.get_hits(platforms)
+        for tile in collisions:
+            print(self.velocity,tile.rect.y - self.rect.bottom)
+            if self.velocity > 0 and 0 <= ( self.rect.bottom - tile.rect.y ) < 50:
+                self.jumping = False
+                self.double_jumping = False
+                self.velocity = 0
+                self.rect.bottom = tile.rect.top
+        self.rect.y -= 1
+
+    def get_hits(self, sprite_group):
+        return pygame.sprite.spritecollide(self, sprite_group, False)
