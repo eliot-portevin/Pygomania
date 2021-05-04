@@ -20,7 +20,7 @@ class Game:
         self.platforms = pygame.sprite.Group()
         surface = pygame.surface.Surface((200, 50), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 150))
-        self.platform_1 = Platform(surface, pygame.rect.Rect(500, 700, 200, 50))
+        self.platform_1 = Platform(surface, pygame.rect.Rect(500, 400, 200, 50))
         self.platforms.add(self.platform_1)
 
         # Players

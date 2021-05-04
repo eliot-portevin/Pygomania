@@ -12,7 +12,7 @@ class Spritesheet:
                 self.data = json.load(f)
             f.close()
         except Exception:
-            print('Sprite sheets couldnt be loaded')
+            print("Sprite sheets couldn't be loaded")
             pass
 
     def get_sprites(self, x, y, w, h, x_o, y_o, w_o, h_o):
@@ -28,5 +28,6 @@ class Spritesheet:
         size = sprite['sourceSize']
         x, y, w, h = in_image['x'], in_image['y'], in_image['w'], in_image['h']
         x_o, y_o, w_o, h_o = original['x'], original['y'], size['w'], size['h']
+        duration = sprite['duration']
         image = self.get_sprites(x, y, w, h, x_o, y_o, w_o, h_o)
-        return image
+        return image,duration

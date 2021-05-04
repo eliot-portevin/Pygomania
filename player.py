@@ -41,24 +41,20 @@ class Player(pygame.sprite.Sprite):
         self.ultimate_left_sprites = []
 
         for row in range(1, 9):
-            sprite = self.idle_sheet.parse_sprites(f"idle{row}.png")
+            sprite,duration = self.idle_sheet.parse_sprites(f"idle{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
-            self.idle_right_sprites.append(sprite)
-            self.idle_left_sprites.append(pygame.transform.flip(sprite, True, False))
+            self.idle_right_sprites.append([sprite,duration])
+            self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False),duration])
         for row in range(1, 9):
-            sprite = self.move_sheet.parse_sprites(f"move{row}.png")
+            sprite,duration = self.move_sheet.parse_sprites(f"move{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
-            self.move_right_sprites.append(sprite)
-            self.move_left_sprites.append(pygame.transform.flip(sprite, True, False))
-        for row in range(8):
-            sprite = self.move_sheet.get_sprites(row * 47, 0, 47, 53, 0, 0, 47, 53)
-            sprite = pygame.transform.flip(sprite, True, False)
-            self.move_left_sprites.append(pygame.transform.scale(sprite, (120, 135)))
+            self.move_right_sprites.append([sprite,duration])
+            self.move_left_sprites.append([pygame.transform.flip(sprite, True, False),duration])
         for row in range(1, 9):
-            sprite = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
+            sprite,duration = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
-            self.spell_right_sprites.append(sprite)
-            self.spell_left_sprites.append(pygame.transform.flip(sprite, True, False))
+            self.spell_right_sprites.append([sprite,duration])
+            self.spell_left_sprites.append([pygame.transform.flip(sprite, True, False),duration])
 
         self.punching = False
         self.jumping = False
@@ -69,7 +65,7 @@ class Player(pygame.sprite.Sprite):
         self.W = W
         self.H = H
         self.velocity = 0
-        self.acceleration = 0.8
+        self.acceleration = 0.5
         self.key = 1
         self.time = pygame.time.get_ticks()
         self.platforms = platforms
@@ -87,12 +83,6 @@ class Player(pygame.sprite.Sprite):
         self.tmp = 90
 
     def animate(self):
-        if self.punching:
-            self.tmp = 40
-        elif self.moving:
-            self.tmp = 150
-        else:
-            self.tmp = 150
         if pygame.time.get_ticks() - self.time > self.tmp:
             self.key = (self.key + 1) % 8
             if self.punching:
@@ -126,11 +116,17 @@ class Player(pygame.sprite.Sprite):
     def move_left(self,dt):
         if self.rect.x > 0:
             self.rect.x -= 5*dt
-    def check_collision(self,sprite,group):
-        return pygame.sprite.spritecollide(sprite,group,False,False)
+
+    def check_plaform_collision(self,sprite,group):
+        sprite_list = pygame.sprite.spritecollide(sprite,group,False,False)
+        if sprite_list:
+            return sprite_list[0].rect.y
+        return False
+
     def gravity(self,dt):
         if self.jumping and (self.velocity < 0 or self.rect.bottom < round(215 / 216 * self.H)):
-            if not (self.velocity > 0 and self.check_collision(self,self.platforms)):
+            sprites = self.check_plaform_collision(self, self.platforms)
+            if sprites and self.rect.bottom < sprites:
                 self.velocity += self.acceleration * dt
                 self.rect.y += self.velocity * dt
 
