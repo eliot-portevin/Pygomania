@@ -40,23 +40,23 @@ class Player(pygame.sprite.Sprite):
         self.ultimate_right_sprites = []
         self.ultimate_left_sprites = []
 
-        for row in range(1, 3):
+        for row in range(1, self.idle_sheet.get_nb_sprites()+1):
             sprite, duration = self.idle_sheet.parse_sprites(f"mage_idle{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
             self.idle_right_sprites.append([sprite, duration])
             self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
-        for row in range(1, 9):
+        for row in range(1, self.move_sheet.get_nb_sprites()+1):
             sprite, duration = self.move_sheet.parse_sprites(f"move{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
             self.move_right_sprites.append([sprite, duration])
             self.move_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
-        for row in range(1, 9):
+        for row in range(1, self.spell_sheet.get_nb_sprites()+1):
             sprite, duration = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
             self.spell_right_sprites.append([sprite, duration])
             self.spell_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
 
-        self.punching = False
+        self.spelling = False
         self.jumping = False
         self.double_jumping = False
         self.moving = False
@@ -66,7 +66,7 @@ class Player(pygame.sprite.Sprite):
         self.H = H
         self.velocity = 0
         self.acceleration = 0.3
-        self.key = 1
+        self.key = 0
         self.time = pygame.time.get_ticks()
         self.platforms = platforms
         self.fireballs = pygame.sprite.Group()
@@ -80,34 +80,67 @@ class Player(pygame.sprite.Sprite):
         self.life = 100
         self.life_image = pygame.image.load('media/life.png')
         self.life_image = pygame.transform.scale(self.life_image, (57, 57))
-        self.tmp = 90
+        self.tmp = 500
+
+    def change_animation(self):
+        if self.spelling:
+            if self.moving_right:
+                self.image = self.spell_right_sprites[0][0]
+            else:
+                self.image = self.spell_left_sprites[0][0]
+            self.tmp = self.spell_right_sprites[0][1]
+        elif not self.moving:
+            self.tmp = self.idle_right_sprites[0][1]
+            if self.moving_right:
+                self.image = self.idle_right_sprites[0][0]
+            else:
+                self.image = self.idle_left_sprites[0][0]
+        else:
+            self.tmp = self.move_right_sprites[0][1]
+            if not self.moving_right:
+                self.image = self.move_left_sprites[0][0]
+            else:
+                self.image = self.move_right_sprites[0][0]
+        self.key = 0
+        self.time = pygame.time.get_ticks()
 
     def animate(self):
-        if pygame.time.get_ticks() - self.time > self.tmp:
-            self.key = (self.key + 1) % 2
-            if self.punching:
-                if self.moving_right:
-                    self.image = self.spell_right_sprites[self.key][0]
-                else:
-                    self.image = self.spell_left_sprites[self.key][0]
-                if self.key == 7:
-                    self.punching = False
+        if pygame.time.get_ticks()-self.time >= self.tmp:
+            if self.spelling:
+                if self.key == self.spell_sheet.get_nb_sprites():
+                    self.spelling = False
                     if self.moving_right:
                         fireball = Fireball((self.rect.right, self.rect.centery), 1)
                     else:
                         fireball = Fireball((self.rect.left, self.rect.centery), -1)
                     fireball.add(self.fireballs)
+                    self.change_animation()
+                elif self.moving_right:
+                    self.image = self.spell_right_sprites[self.key][0]
+                else:
+                    self.image = self.spell_left_sprites[self.key][0]
+                self.tmp = self.spell_left_sprites[self.key][1]
+                print(self.tmp)
+                self.key += 1
+
 
             elif not self.moving:
+                self.tmp = self.idle_right_sprites[self.key][1]
                 if self.moving_right:
                     self.image = self.idle_right_sprites[self.key][0]
                 else:
                     self.image = self.idle_left_sprites[self.key][0]
-            elif not self.moving_right:
-                self.image = self.move_left_sprites[self.key][0]
+                self.key = (self.key + 1) % self.idle_sheet.get_nb_sprites()
             else:
-                self.image = self.move_right_sprites[self.key][0]
+                self.tmp = self.move_right_sprites[self.key][1]
+                if not self.moving_right:
+                    self.image = self.move_left_sprites[self.key][0]
+
+                else:
+                    self.image = self.move_right_sprites[self.key][0]
+                self.key = (self.key+1) % self.move_sheet.get_nb_sprites()
             self.time = pygame.time.get_ticks()
+
 
     def move_right(self, dt):
         if self.rect.x < self.W - self.image.get_width():
@@ -150,4 +183,8 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = tile.rect.top
 
     def get_hits(self, sprite_group):
-        return pygame.sprite.spritecollide(self, sprite_group, False)
+        hits = []
+        for sprite in sprite_group:
+            if pygame.sprite.collide_mask(self,sprite):
+                hits.append(sprite)
+        return hits

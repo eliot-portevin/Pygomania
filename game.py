@@ -119,7 +119,7 @@ class Game:
             stat = self.info_font.render(str(self.stats[self.character][i]), True, self.white)
             self.WINDOW.blit(stat, (x_stat, y))
             self.WINDOW.blit(stat_name, (x_name, y))
-            pygame.draw.rect(self.WINDOW, self.white, (self.W / 2 - 100, y + 5, int(self.stats[self.character][i])*300/self.stats_max[i], 10))
+            pygame.draw.rect(self.WINDOW, self.white, pygame.rect.Rect(self.W / 2 - 100, y + 5, int(self.stats[self.character][i])*300/self.stats_max[i], 10))
             y += 40
 
     def main_menu_func(self):

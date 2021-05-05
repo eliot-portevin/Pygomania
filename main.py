@@ -46,16 +46,16 @@ def main():
                 if event.key == pygame.K_w and not game.player.double_jumping:
                     game.player.jump(dt)
                 if event.key == pygame.K_q:
-                    if not game.player.punching:
-                        game.player.punching = True
-                        game.player.key = 0
+                    if not game.player.spelling:
+                        game.player.spelling = True
+                        game.player.change_animation()
                 if event.key == pygame.K_a:
                     if game.keys.get(pygame.K_d):
                         game.player.moving = False
                     else:
                         game.player.moving_right = False
                         game.player.moving = True
-                    game.player.key = 0
+                    game.player.change_animation()
                 if event.key == pygame.K_s:
                     game.player.fall_down()
                 if event.key == pygame.K_d:
@@ -64,6 +64,7 @@ def main():
                     else:
                         game.player.moving_right = True
                         game.player.moving = True
+                    game.player.change_animation()
                 if event.key == pygame.K_SPACE and game.menu_open:
                     game.menu_open = False
                     game.main_menu = True
@@ -78,7 +79,7 @@ def main():
                     elif game.keys.get(pygame.K_d):
                         game.player.moving_right = True
                         game.player.moving = True
-                    game.player.key = 0
+                    game.player.change_animation()
             if event.type == pygame.MOUSEBUTTONUP:
                 game.mouse_rect.x, game.mouse_rect.y = pygame.mouse.get_pos()
                 if game.mouse_rect.colliderect(game.start_rect):
