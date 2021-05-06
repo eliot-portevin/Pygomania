@@ -72,7 +72,7 @@ class Player(pygame.sprite.Sprite):
         self.fireballs = pygame.sprite.Group()
 
         self.image = self.idle_right_sprites[0][0]
-        self.image = pygame.transform.scale(self.image, (256, 256))
+        self.image = pygame.transform.scale(self.image, (192,192))
         self.player_left = self.image
         self.player_right = pygame.transform.flip(self.player_left, True, False)
         self.rect = self.image.get_rect()
@@ -171,12 +171,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += 1
         collisions = self.get_hits(platforms)
         for tile in collisions:
-            if self.velocity > 0 and 0 <= (self.rect.bottom - tile.rect.y ) < 10:
+            if self.velocity > 0 and 0 <= (self.rect.bottom - tile.rect.y) < 70:
                 self.jumping = False
                 self.double_jumping = False
                 self.velocity = 0
+                print(self.rect.bottom,tile.rect.top)
                 self.rect.bottom = tile.rect.top
-
+                print(self.rect.bottom)
     def get_hits(self, sprite_group):
         hits = []
         for sprite in sprite_group:
