@@ -7,7 +7,7 @@ from spritesheet import Spritesheet
 class Player(pygame.sprite.Sprite):
     def __init__(self, W, H, x, y, character, platforms):
         super().__init__()
-        self.idle_sheet = Spritesheet(f'{character}mage_idle.png')
+        self.idle_sheet = Spritesheet(f'{character}idle-sheet.png')
         self.move_sheet = Spritesheet(f'{character}move-sheet.png')
         self.crouched_sheet = None
         self.jump_sheet = None
@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         self.ultimate_left_sprites = []
 
         for row in range(1, self.idle_sheet.get_nb_sprites()+1):
-            sprite, duration = self.idle_sheet.parse_sprites(f"mage_idle{row}.png")
+            sprite, duration = self.idle_sheet.parse_sprites(f"idle{row}.png")
             sprite = pygame.transform.scale(sprite, (192,192))
             self.idle_right_sprites.append([sprite, duration])
             self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
