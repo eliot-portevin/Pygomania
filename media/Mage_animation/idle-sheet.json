@@ -1,5 +1,5 @@
 { "frames": {
-   "idle1.png": {
+   "idle0.png": {
     "frame": { "x": 0, "y": 0, "w": 19, "h": 19 },
     "rotated": false,
     "trimmed": false,
@@ -7,7 +7,7 @@
     "sourceSize": { "w": 19, "h": 19 },
     "duration": 500
    },
-   "idle2.png": {
+   "idle1.png": {
     "frame": { "x": 19, "y": 0, "w": 19, "h": 19 },
     "rotated": false,
     "trimmed": false,
@@ -26,7 +26,7 @@
   "frameTags": [
   ],
   "layers": [
-   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]

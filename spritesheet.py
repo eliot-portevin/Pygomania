@@ -12,7 +12,7 @@ class Spritesheet:
                 self.data = json.load(f)
             f.close()
 
-        except Exception:
+        except FileNotFoundError:
             print("Sprite sheets couldn't be loaded")
             pass
 

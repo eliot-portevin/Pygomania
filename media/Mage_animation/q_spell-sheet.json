@@ -1,5 +1,5 @@
 { "frames": {
-   "q_spell1.png": {
+   "q_spell0.png": {
     "frame": { "x": 0, "y": 0, "w": 59, "h": 54 },
     "rotated": false,
     "trimmed": true,
@@ -7,7 +7,7 @@
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 50
    },
-   "q_spell2.png": {
+   "q_spell1.png": {
     "frame": { "x": 59, "y": 0, "w": 59, "h": 53 },
     "rotated": false,
     "trimmed": true,
@@ -15,7 +15,7 @@
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 50
    },
-   "q_spell3.png": {
+   "q_spell2.png": {
     "frame": { "x": 59, "y": 53, "w": 59, "h": 51 },
     "rotated": false,
     "trimmed": true,
@@ -23,7 +23,7 @@
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 50
    },
-   "q_spell4.png": {
+   "q_spell3.png": {
     "frame": { "x": 0, "y": 54, "w": 59, "h": 49 },
     "rotated": false,
     "trimmed": true,
@@ -31,7 +31,7 @@
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 50
    },
-   "q_spell5.png": {
+   "q_spell4.png": {
     "frame": { "x": 0, "y": 104, "w": 60, "h": 49 },
     "rotated": false,
     "trimmed": true,
@@ -39,7 +39,7 @@
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 50
    },
-   "q_spell6.png": {
+   "q_spell5.png": {
     "frame": { "x": 118, "y": 98, "w": 61, "h": 49 },
     "rotated": false,
     "trimmed": true,
@@ -47,7 +47,7 @@
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 50
    },
-   "q_spell7.png": {
+   "q_spell6.png": {
     "frame": { "x": 118, "y": 0, "w": 62, "h": 49 },
     "rotated": false,
     "trimmed": true,
@@ -55,7 +55,7 @@
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 50
    },
-   "q_spell8.png": {
+   "q_spell7.png": {
     "frame": { "x": 118, "y": 49, "w": 62, "h": 49 },
     "rotated": false,
     "trimmed": true,

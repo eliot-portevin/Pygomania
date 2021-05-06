@@ -1,19 +1,51 @@
 { "frames": {
-   "move1.png": {
-    "frame": { "x": 0, "y": 0, "w": 19, "h": 19 },
+   "move0.png": {
+    "frame": { "x": 0, "y": 0, "w": 18, "h": 19 },
     "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 19, "h": 19 },
-    "sourceSize": { "w": 19, "h": 19 },
-    "duration": 500
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 1, "w": 18, "h": 19 },
+    "sourceSize": { "w": 20, "h": 20 },
+    "duration": 100
+   },
+   "move1.png": {
+    "frame": { "x": 18, "y": 0, "w": 19, "h": 19 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 1, "w": 19, "h": 19 },
+    "sourceSize": { "w": 20, "h": 20 },
+    "duration": 100
    },
    "move2.png": {
-    "frame": { "x": 19, "y": 0, "w": 19, "h": 19 },
+    "frame": { "x": 37, "y": 0, "w": 18, "h": 19 },
     "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 19, "h": 19 },
-    "sourceSize": { "w": 19, "h": 19 },
-    "duration": 500
+    "trimmed": true,
+    "spriteSourceSize": { "x": 1, "y": 1, "w": 18, "h": 19 },
+    "sourceSize": { "w": 20, "h": 20 },
+    "duration": 100
+   },
+   "move3.png": {
+    "frame": { "x": 55, "y": 0, "w": 18, "h": 19 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 2, "y": 1, "w": 18, "h": 19 },
+    "sourceSize": { "w": 20, "h": 20 },
+    "duration": 100
+   },
+   "move4.png": {
+    "frame": { "x": 73, "y": 0, "w": 18, "h": 19 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 1, "y": 1, "w": 18, "h": 19 },
+    "sourceSize": { "w": 20, "h": 20 },
+    "duration": 100
+   },
+   "move5.png": {
+    "frame": { "x": 91, "y": 0, "w": 19, "h": 19 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 0, "y": 1, "w": 19, "h": 19 },
+    "sourceSize": { "w": 20, "h": 20 },
+    "duration": 100
    }
  },
  "meta": {
@@ -21,12 +53,12 @@
   "version": "1.2.27",
   "image": "move-sheet.png",
   "format": "RGBA8888",
-  "size": { "w": 38, "h": 19 },
+  "size": { "w": 110, "h": 19 },
   "scale": "1",
   "frameTags": [
   ],
   "layers": [
-   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]

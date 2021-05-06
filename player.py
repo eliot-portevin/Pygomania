@@ -40,17 +40,17 @@ class Player(pygame.sprite.Sprite):
         self.ultimate_right_sprites = []
         self.ultimate_left_sprites = []
 
-        for row in range(1, self.idle_sheet.get_nb_sprites()+1):
+        for row in range( self.idle_sheet.get_nb_sprites()):
             sprite, duration = self.idle_sheet.parse_sprites(f"idle{row}.png")
             sprite = pygame.transform.scale(sprite, (192,192))
             self.idle_right_sprites.append([sprite, duration])
             self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
-        for row in range(1, self.move_sheet.get_nb_sprites()+1):
+        for row in range(self.move_sheet.get_nb_sprites()):
             sprite, duration = self.move_sheet.parse_sprites(f"move{row}.png")
-            sprite = pygame.transform.scale(sprite, (256, 256))
+            sprite = pygame.transform.scale(sprite, (192,192))
             self.move_right_sprites.append([sprite, duration])
             self.move_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
-        for row in range(1, self.spell_sheet.get_nb_sprites()+1):
+        for row in range(self.spell_sheet.get_nb_sprites()):
             sprite, duration = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
             sprite = pygame.transform.scale(sprite, (256, 256))
             self.spell_right_sprites.append([sprite, duration])
@@ -175,9 +175,7 @@ class Player(pygame.sprite.Sprite):
                 self.jumping = False
                 self.double_jumping = False
                 self.velocity = 0
-                print(self.rect.bottom,tile.rect.top)
                 self.rect.bottom = tile.rect.top
-                print(self.rect.bottom)
     def get_hits(self, sprite_group):
         hits = []
         for sprite in sprite_group:
