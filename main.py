@@ -24,7 +24,6 @@ def main():
     while playing:
 
         clock.tick(fps)
-        print(clock.get_fps())
         dt = (time.time() - game.prev_time)*50
         game.prev_time = time.time()
         win.blit(BG, (0, 0))

@@ -20,6 +20,4 @@ class Fireball(pygame.sprite.Sprite):
             self.remove()
 
     def remove(self):
-        # print(self.groups)             #Je les ai enlevés parce que ils servaient à rien
-        # print(self.groups())           #Mais en même temps je me disais que tu pourrais en avoir besoin
         self.kill()

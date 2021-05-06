@@ -5,7 +5,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 18, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 100
+    "duration": 120
    },
    "move1.png": {
     "frame": { "x": 18, "y": 0, "w": 19, "h": 19 },
@@ -13,7 +13,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 19, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 100
+    "duration": 120
    },
    "move2.png": {
     "frame": { "x": 37, "y": 0, "w": 18, "h": 19 },
@@ -21,7 +21,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 1, "y": 1, "w": 18, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 100
+    "duration": 120
    },
    "move3.png": {
     "frame": { "x": 55, "y": 0, "w": 18, "h": 19 },
@@ -29,7 +29,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 2, "y": 1, "w": 18, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 100
+    "duration": 120
    },
    "move4.png": {
     "frame": { "x": 73, "y": 0, "w": 18, "h": 19 },
@@ -37,7 +37,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 1, "y": 1, "w": 18, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 100
+    "duration": 120
    },
    "move5.png": {
     "frame": { "x": 91, "y": 0, "w": 19, "h": 19 },
@@ -45,7 +45,7 @@
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 19, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 100
+    "duration": 120
    }
  },
  "meta": {

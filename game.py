@@ -20,8 +20,8 @@ class Game:
         self.platforms = pygame.sprite.Group()
         surface = pygame.surface.Surface((200, 50), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 150))
-        self.platform_1 = Platform(surface, pygame.rect.Rect(300, 500, 200, 50))
-        self.platform_2 = Platform(surface,pygame.rect.Rect(900,500,200,50))
+        self.platform_1 = Platform(surface, pygame.rect.Rect(250, 550, 200, 50))
+        self.platform_2 = Platform(surface,pygame.rect.Rect(1000,550,200,50))
         surface = pygame.surface.Surface((W,round(H*0.0602)),pygame.SRCALPHA)
         surface.set_colorkey((0,0,0))
         self.ground = Platform(surface,pygame.rect.Rect(0,round(H*0.9398),W,H*0.0602))
@@ -177,12 +177,9 @@ class Game:
             self.player.move_left(dt)
         if self.keys.get(pygame.K_d):
             self.player.move_right(dt)
-        if self.keys.get(pygame.K_s):
-            self.player.fall_down()
 
-        self.player.gravity(dt)
-        self.player.check_collision_y(self.platforms)
-        self.player.animate()
+
+        self.player.move(dt,self.platforms)
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
         self.player.fireballs.draw(self.WINDOW)
