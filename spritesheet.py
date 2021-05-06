@@ -11,11 +11,14 @@ class Spritesheet:
             with open(self.metadata) as f:
                 self.data = json.load(f)
             f.close()
+
         except Exception:
             print("Sprite sheets couldn't be loaded")
             pass
+
     def get_nb_sprites(self):
         return len(self.data['frames'].keys())
+
     def get_sprites(self, x, y, w, h, x_o, y_o, w_o, h_o):
         sprite = pygame.Surface((w_o, h_o))
         sprite.set_colorkey((0, 0, 0))

@@ -42,7 +42,7 @@ class Player(pygame.sprite.Sprite):
 
         for row in range(1, self.idle_sheet.get_nb_sprites()+1):
             sprite, duration = self.idle_sheet.parse_sprites(f"mage_idle{row}.png")
-            sprite = pygame.transform.scale(sprite, (256, 256))
+            sprite = pygame.transform.scale(sprite, (192,192))
             self.idle_right_sprites.append([sprite, duration])
             self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
         for row in range(1, self.move_sheet.get_nb_sprites()+1):
@@ -120,7 +120,6 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.image = self.spell_left_sprites[self.key][0]
                 self.tmp = self.spell_left_sprites[self.key][1]
-                print(self.tmp)
                 self.key += 1
 
 
@@ -144,20 +143,16 @@ class Player(pygame.sprite.Sprite):
 
     def move_right(self, dt):
         if self.rect.x < self.W - self.image.get_width():
-            print(f"RIGHT = {dt}")
             self.rect.x += round(5 * dt)
 
     def move_left(self, dt):
         if self.rect.x > 0:
-            print(f"LEFT = {dt}")
             self.rect.x -= round(5 * dt)
 
     def jump(self, dt):
-        print("jumping")
         if not self.jumping:
             self.jumping = True
         elif not self.double_jumping:
-            print("DOUBLE")
             self.double_jumping = True
 
         self.velocity = -12
@@ -176,7 +171,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += 1
         collisions = self.get_hits(platforms)
         for tile in collisions:
-            if self.velocity > 0 and 0 <= (self.rect.bottom - tile.rect.y ) < 50:
+            if self.velocity > 0 and 0 <= (self.rect.bottom - tile.rect.y ) < 10:
                 self.jumping = False
                 self.double_jumping = False
                 self.velocity = 0
