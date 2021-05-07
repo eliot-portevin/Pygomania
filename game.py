@@ -24,7 +24,7 @@ class Game:
         self.platform_2 = Platform(surface,pygame.rect.Rect(1000,550,200,50))
         surface = pygame.surface.Surface((W,round(H*0.0602)),pygame.SRCALPHA)
         surface.set_colorkey((0,0,0))
-        self.ground = Platform(surface,pygame.rect.Rect(0,round(H*0.9398),W,H*0.0602))
+        self.ground = Platform(surface,pygame.rect.Rect(0,round(H*0.942),W,H*0.0602))
         self.platforms.add(self.platform_1,self.platform_2,self.ground)
 
         # Players

@@ -43,7 +43,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 game.keys[event.key] = True
-                if event.key == pygame.K_w and not game.player.double_jumping:
+                if event.key == pygame.K_w and not game.player.double_jumping :
                     game.player.jump(dt)
                 if event.key == pygame.K_q:
                     if not game.player.spelling:

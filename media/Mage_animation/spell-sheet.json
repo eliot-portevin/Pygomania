@@ -1,59 +1,59 @@
 { "frames": {
-   "q_spell0.png": {
+   "spell0.png": {
     "frame": { "x": 0, "y": 0, "w": 18, "h": 19 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 18, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 60
+    "duration": 30
    },
-   "q_spell1.png": {
+   "spell1.png": {
     "frame": { "x": 18, "y": 0, "w": 19, "h": 19 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 19, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 60
+    "duration": 30
    },
-   "q_spell2.png": {
+   "spell2.png": {
     "frame": { "x": 37, "y": 0, "w": 20, "h": 19 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 20, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 60
+    "duration": 30
    },
-   "q_spell3.png": {
+   "spell3.png": {
     "frame": { "x": 57, "y": 0, "w": 20, "h": 19 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 20, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 60
+    "duration": 30
    },
-   "q_spell4.png": {
+   "spell4.png": {
     "frame": { "x": 77, "y": 0, "w": 20, "h": 19 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 20, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 60
+    "duration": 30
    },
-   "q_spell5.png": {
+   "spell5.png": {
     "frame": { "x": 97, "y": 0, "w": 20, "h": 19 },
     "rotated": false,
     "trimmed": true,
     "spriteSourceSize": { "x": 0, "y": 1, "w": 20, "h": 19 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 60
+    "duration": 30
    },
-   "q_spell6.png": {
+   "spell6.png": {
     "frame": { "x": 117, "y": 0, "w": 20, "h": 20 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 20, "h": 20 },
     "sourceSize": { "w": 20, "h": 20 },
-    "duration": 115
+    "duration": 60
    }
  },
  "meta": {

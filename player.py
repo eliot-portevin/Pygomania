@@ -7,26 +7,16 @@ from spritesheet import Spritesheet
 class Player(pygame.sprite.Sprite):
     def __init__(self, W, H, x, y, character, platforms):
         super().__init__()
-        self.idle_sheet = Spritesheet(f'{character}idle-sheet.png')
-        self.move_sheet = Spritesheet(f'{character}move-sheet.png')
         self.crouched_sheet = None
-        self.jump_sheet = None
         self.slight_hit_sheet = None
         self.big_hit_sheet = None
         self.jumping_attack_sheet = None
         self.falling_attack_sheet = None
         self.crouched_attack = None
-        self.spell_sheet = Spritesheet(f"{character}q_spell-sheet.png")
         self.ultimate_sheet = None
 
-        self.idle_right_sprites = []
-        self.idle_left_sprites = []
-        self.move_right_sprites = []
-        self.move_left_sprites = []
         self.crouched_right_sprites = []
         self.crouched_left_sprites = []
-        self.jump_right_sprites = []
-        self.jump_left_sprites = []
         self.slight_hit_right_sprites = []
         self.slight_hit_left_sprites = []
         self.big_hit_right_sprites = []
@@ -35,45 +25,32 @@ class Player(pygame.sprite.Sprite):
         self.jumping_attack_left_sprites = []
         self.falling_attack_right_sprites = []
         self.falling_attack_left_sprites = []
-        self.spell_right_sprites = []
-        self.spell_left_sprites = []
         self.ultimate_right_sprites = []
         self.ultimate_left_sprites = []
 
-        for row in range( self.idle_sheet.get_nb_sprites()):
-            sprite, duration = self.idle_sheet.parse_sprites(f"idle{row}.png")
-            sprite = pygame.transform.scale(sprite, (192,192))
-            self.idle_right_sprites.append([sprite, duration])
-            self.idle_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
-        for row in range(self.move_sheet.get_nb_sprites()):
-            sprite, duration = self.move_sheet.parse_sprites(f"move{row}.png")
-            sprite = pygame.transform.scale(sprite, (192,192))
-            self.move_right_sprites.append([sprite, duration])
-            self.move_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
-        for row in range(self.spell_sheet.get_nb_sprites()):
-            sprite, duration = self.spell_sheet.parse_sprites(f"q_spell{row}.png")
-            sprite = pygame.transform.scale(sprite, (192, 192))
-            self.spell_right_sprites.append([sprite, duration])
-            self.spell_left_sprites.append([pygame.transform.flip(sprite, True, False), duration])
+        self.create_animations('idle',character)
+        self.create_animations('move',character)
+        self.create_animations('spell',character)
+        self.create_animations('jump',character)
 
         self.spelling = False
         self.jumping = False
         self.double_jumping = False
         self.moving = False
         self.moving_right = False
+        self.jump_animation = False
 
         self.W = W
         self.H = H
         self.velocity = 0
-        self.acceleration = 0.5
+        self.acceleration = 0.6
         self.key = 0
         self.time = pygame.time.get_ticks()
         self.platforms = platforms
         self.fireballs = pygame.sprite.Group()
 
         self.image = self.idle_right_sprites[0][0]
-        self.image = pygame.transform.scale(self.image, (192,192))
-        self.ground = round(self.H*0.9398)
+        self.ground = round(self.H*0.942)
         self.fall_platform = False
         self.player_left = self.image
         self.player_right = pygame.transform.flip(self.player_left, True, False)
@@ -83,6 +60,16 @@ class Player(pygame.sprite.Sprite):
         self.life_image = pygame.image.load('media/life.png')
         self.life_image = pygame.transform.scale(self.life_image, (57, 57))
         self.tmp = 500
+
+    def create_animations(self,sheet_name,directory):
+        setattr(self,sheet_name+"_sheet",Spritesheet(directory+sheet_name+"-sheet.png"))
+        setattr(self, sheet_name + "_right_sprites", [])
+        setattr(self, sheet_name + "_left_sprites", [])
+        for i in range(getattr(self,sheet_name+"_sheet").get_nb_sprites()):
+            sprite, duration = getattr(self, sheet_name+"_sheet").parse_sprites(f"{sheet_name}{i}.png")
+            sprite = pygame.transform.scale(sprite,(192,192))
+            getattr(self, sheet_name + "_right_sprites").append([sprite,duration])
+            getattr(self,sheet_name+"_left_sprites").append([pygame.transform.flip(sprite, True, False), duration])
 
     def move(self,dt,platforms):
         self.gravity(dt)
@@ -96,10 +83,17 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.fall_platform = False
         self.check_collision_y(copy)
-        self.animate()
+        self.animate(dt)
         copy.empty()
+
     def change_animation(self):
-        if self.spelling:
+        if self.jump_animation:
+            if self.moving_right:
+                self.image = self.jump_right_sprites[0][0]
+            else:
+                self.image = self.jump_left_sprites[0][0]
+            self.tmp = self.jump_right_sprites[0][1]
+        elif self.spelling:
             if self.moving_right:
                 self.image = self.spell_right_sprites[0][0]
             else:
@@ -120,9 +114,19 @@ class Player(pygame.sprite.Sprite):
         self.key = 0
         self.time = pygame.time.get_ticks()
 
-    def animate(self):
+    def animate(self,dt):
         if pygame.time.get_ticks()-self.time >= self.tmp:
-            if self.spelling:
+            if self.jump_animation:
+                if self.key == self.jump_sheet.get_nb_sprites()-1:
+                    self.jump(dt)
+                elif self.moving_right:
+                    self.key += 1
+                    self.image = self.jump_right_sprites[self.key][0]
+                else:
+                    self.key += 1
+                    self.image = self.jump_left_sprites[self.key][0]
+                self.tmp = self.jump_left_sprites[self.key][1]
+            elif self.spelling:
                 if self.key == self.spell_sheet.get_nb_sprites()-1:
                     self.spelling = False
                     if self.moving_right:
@@ -166,13 +170,20 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= round(5 * dt)
 
     def jump(self, dt):
-        if not self.jumping:
-            self.jumping = True
-        elif not self.double_jumping:
-            self.double_jumping = True
-
-        self.velocity = -12
-        self.rect.y += self.velocity * dt
+        print(self.jumping, " ", self.double_jumping)
+        if not self.jump_animation and not self.jumping:
+            self.jump_animation = True
+            self.spelling = False
+            self.change_animation()
+        else:
+            self.jump_animation = False
+            if not self.jumping:
+                self.jumping = True
+            elif not self.double_jumping:
+                self.double_jumping = True
+            self.velocity = -15
+            self.rect.y += self.velocity * dt
+            print(f"Jumping is {self.jumping}, Double is {self.double_jumping}")
 
     def fall_down(self):
         if self.jumping or self.double_jumping:
