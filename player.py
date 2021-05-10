@@ -204,6 +204,8 @@ class Player(pygame.sprite.Sprite):
                 self.double_jumping = False
                 self.velocity = 0
                 self.rect.bottom = tile.rect.top
+        if self.rect.bottom > self.ground :
+            self.rect.bottom = self.ground
 
     def get_hits(self, sprite_group):
         hits = []
