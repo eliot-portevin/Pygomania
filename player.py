@@ -7,6 +7,8 @@ from spritesheet import Spritesheet
 class Player(pygame.sprite.Sprite):
     def __init__(self, W, H, x, y, character, platforms):
         super().__init__()
+        self.dir = character
+
         self.crouched_sheet = None
         self.slight_hit_sheet = None
         self.big_hit_sheet = None
@@ -28,10 +30,12 @@ class Player(pygame.sprite.Sprite):
         self.ultimate_right_sprites = []
         self.ultimate_left_sprites = []
 
-        self.create_animations('idle', character)
-        self.create_animations('move', character)
-        self.create_animations('spell', character)
-        self.create_animations('jump', character)
+        self.create_animations('idle')
+        self.create_animations('move')
+        self.create_animations('spell')
+        self.create_animations('jump')
+        self.create_animations('ultimate')
+
         self.spelling = False
         self.jumping = False
         self.double_jumping = False
@@ -48,6 +52,11 @@ class Player(pygame.sprite.Sprite):
         self.platforms = platforms
         self.fireballs = pygame.sprite.Group()
 
+        self.planning_ulti = False
+        self.ulti = False
+        self.ulti_prev_surf = pygame.surface.Surface((150,(round(self.H*0.03))),pygame.SRCALPHA)
+        self.ulti_prev_surf_alpha = 0
+
         self.image = self.idle_right_sprites[0][0]
         self.ground = round(self.H * 0.942)
         self.fall_platform = False
@@ -60,8 +69,8 @@ class Player(pygame.sprite.Sprite):
         self.life_image = pygame.transform.scale(self.life_image, (57, 57))
         self.tmp = 500
 
-    def create_animations(self, sheet_name, directory):
-        setattr(self, sheet_name + "_sheet", Spritesheet(directory + sheet_name + "-sheet.png"))
+    def create_animations(self, sheet_name):
+        setattr(self, sheet_name + "_sheet", Spritesheet(self.dir + sheet_name + "-sheet.png"))
         setattr(self, sheet_name + "_right_sprites", [])
         setattr(self, sheet_name + "_left_sprites", [])
         for i in range(getattr(self, sheet_name + "_sheet").get_nb_sprites()):
@@ -71,7 +80,7 @@ class Player(pygame.sprite.Sprite):
             getattr(self, sheet_name + "_right_sprites").append([sprite, duration])
             getattr(self, sheet_name + "_left_sprites").append([pygame.transform.flip(sprite, True, False), duration])
 
-    def move(self, dt, platforms):
+    def move(self, dt, platforms,window):
         self.gravity(dt)
         copy = platforms.copy()
         if self.fall_platform:
@@ -93,6 +102,12 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.image = self.jump_left_sprites[0][0]
             self.tmp = self.jump_right_sprites[0][1]
+        elif self.ulti:
+            if self.moving_right:
+                self.image = self.ultimate_right_sprites[0][0]
+            else:
+                self.image = self.ultimate_left_sprites[0][0]
+            self.tmp = self.ultimate_right_sprites[0][1]
         elif self.spelling:
             if self.moving_right:
                 self.image = self.spell_right_sprites[0][0]
@@ -128,6 +143,26 @@ class Player(pygame.sprite.Sprite):
                     self.key += 1
                     self.image = self.jump_left_sprites[self.key][0]
                 self.tmp = self.jump_left_sprites[self.key][1]
+            elif self.ulti:
+                self.ulti_prev_surf_alpha += 20
+                self.ulti_prev_surf.fill((0, 0, 0, self.ulti_prev_surf_alpha))
+                if self.key == self.ultimate_sheet.get_nb_sprites() - 1:
+                    self.ulti = False
+                    self.ulti_prev_surf_alpha = 5
+                    if self.moving_right:
+                        fireball = Fireball((self.rect.right, self.rect.centery), 1)
+                    else:
+                        fireball = Fireball((self.rect.left, self.rect.centery), -1)
+                    fireball.add(self.fireballs)
+                    self.change_animation()
+                else:
+                    if self.moving_right:
+                        self.key += 1
+                        self.image = self.ultimate_right_sprites[self.key][0]
+                    else:
+                        self.key += 1
+                        self.image = self.ultimate_left_sprites[self.key][0]
+                self.tmp = self.ultimate_left_sprites[self.key][1]
             elif self.spelling:
                 if self.key == self.spell_sheet.get_nb_sprites() - 1:
                     self.spelling = False
@@ -163,6 +198,17 @@ class Player(pygame.sprite.Sprite):
             x, bottom = self.rect.x, self.rect.bottom
             self.rect = self.image.get_rect(x=x, bottom=bottom)
             self.time = pygame.time.get_ticks()
+
+    def ulti_prevision(self,surf):
+        if self.planning_ulti:
+            x = pygame.mouse.get_pos()[0]
+            self.ulti_pos = x
+            w = 150
+            surface = pygame.surface.Surface((150, self.ground),pygame.SRCALPHA)
+            surface.fill((0,0,0,100))
+            surf.blit(surface,(x-w/2,0))
+        if self.ulti:
+            surf.blit(self.ulti_prev_surf, (self.ulti_pos - 75, self.ground))
 
     def move_right(self, dt):
         if self.rect.x < self.W - self.image.get_width():

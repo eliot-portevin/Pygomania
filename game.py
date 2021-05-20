@@ -2,6 +2,7 @@ import pygame, time
 from player import Player
 from platforms import Platform
 
+
 class Game:
     def __init__(self, win, W, H, BG):
         self.WINDOW = win
@@ -70,7 +71,6 @@ class Game:
         self.mouse_rect = pygame.Rect(0, 0, 1, 1)
         self.prev_time = time.time()
 
-
         # Colours
         self.white = (255, 255, 255)
         self.button_colour = (217, 215, 126, 140)
@@ -78,6 +78,7 @@ class Game:
         self.black_transparent = (0, 0, 0, 150)
         self.green = (0, 255, 0)
         self.red = (255, 0, 0, 180)
+
         # Temporary values
         self.tmp = 1
 
@@ -178,11 +179,11 @@ class Game:
         if self.keys.get(pygame.K_d):
             self.player.move_right(dt)
 
-
-        self.player.move(dt,self.platforms)
+        self.player.move(dt, self.platforms,self.WINDOW)
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
         self.player.fireballs.draw(self.WINDOW)
+        self.player.ulti_prevision(self.WINDOW)
         for fireball in self.player.fireballs:
             fireball.move(dt)
         # Life Bar
