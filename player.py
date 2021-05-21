@@ -203,6 +203,12 @@ class Player(pygame.sprite.Sprite):
         if self.planning_ulti:
             x = pygame.mouse.get_pos()[0]
             self.ulti_pos = x
+            if self.rect.x - x > 0 and self.moving_right:
+                self.moving_right = False
+                self.change_animation()
+            elif self.rect.x - x < 0 and not self.moving_right:
+                self.moving_right = True
+                self.change_animation()
             w = 150
             surface = pygame.surface.Surface((150, self.ground),pygame.SRCALPHA)
             surface.fill((0,0,0,100))
