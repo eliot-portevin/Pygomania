@@ -183,9 +183,12 @@ class Game:
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
         self.player.fireballs.draw(self.WINDOW)
+        self.player.laser_beam.draw(self.WINDOW)
         self.player.ulti_prevision(self.WINDOW)
         for fireball in self.player.fireballs:
             fireball.move(dt)
+        for laser in self.player.laser_beam:
+            laser.check()
         # Life Bar
         self.BG.blit(self.player.life_image, (40, 60))
         if self.tmp == 1:

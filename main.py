@@ -58,7 +58,7 @@ def main():
                     game.player.change_animation()
                 elif event.key == pygame.K_s:
                     game.player.fall_down()
-                elif event.key == pygame.K_e:
+                elif event.key == pygame.K_e and not game.player.planning_ulti:
                     game.player.planning_ulti = True
                 elif event.key == pygame.K_d:
                     if game.keys.get(pygame.K_a):
@@ -72,7 +72,7 @@ def main():
                     game.main_menu = True
             elif event.type == pygame.KEYUP:
                 game.keys[event.key] = False
-                if event.key == pygame.K_e and game.player.planning_ulti:
+                if event.key == pygame.K_e and game.player.planning_ulti and not game.player.ulti:
                     game.player.planning_ulti = False
                     game.player.ulti = True
                     game.player.change_animation()

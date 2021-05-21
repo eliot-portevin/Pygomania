@@ -1,6 +1,7 @@
 import pygame
 
 from fireball import Fireball
+from laser_beam import Laser_Beam
 from spritesheet import Spritesheet
 
 
@@ -51,6 +52,7 @@ class Player(pygame.sprite.Sprite):
         self.time = pygame.time.get_ticks()
         self.platforms = platforms
         self.fireballs = pygame.sprite.Group()
+        self.laser_beam = pygame.sprite.GroupSingle()
 
         self.planning_ulti = False
         self.ulti = False
@@ -144,17 +146,17 @@ class Player(pygame.sprite.Sprite):
                     self.image = self.jump_left_sprites[self.key][0]
                 self.tmp = self.jump_left_sprites[self.key][1]
             elif self.ulti:
-                self.ulti_prev_surf_alpha += 20
+                #print(self.tmp)
+                self.ulti_prev_surf_alpha += 15
                 self.ulti_prev_surf.fill((0, 0, 0, self.ulti_prev_surf_alpha))
                 if self.key == self.ultimate_sheet.get_nb_sprites() - 1:
                     self.ulti = False
                     self.ulti_prev_surf_alpha = 5
-                    if self.moving_right:
-                        fireball = Fireball((self.rect.right, self.rect.centery), 1)
-                    else:
-                        fireball = Fireball((self.rect.left, self.rect.centery), -1)
-                    fireball.add(self.fireballs)
                     self.change_animation()
+                elif self.key == self.ultimate_sheet.get_nb_sprites()-2:
+                    laser = Laser_Beam(self.W,self.H,self.ulti_pos)
+                    self.laser_beam.add(laser)
+                    self.key += 1
                 else:
                     if self.moving_right:
                         self.key += 1
@@ -163,6 +165,7 @@ class Player(pygame.sprite.Sprite):
                         self.key += 1
                         self.image = self.ultimate_left_sprites[self.key][0]
                 self.tmp = self.ultimate_left_sprites[self.key][1]
+                print(self.ultimate_left_sprites[self.key])
             elif self.spelling:
                 if self.key == self.spell_sheet.get_nb_sprites() - 1:
                     self.spelling = False
