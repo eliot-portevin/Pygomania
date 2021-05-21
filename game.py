@@ -38,33 +38,34 @@ class Game:
         self.stats_names = [['Health', 'Punch', 'Fireball', 'Lightning'],['Health','Punch','Spring Punch', 'Air KO'],
                             ['Health','Punch','Axe', 'Rage'],['Health','Punch','Words', 'Bear'],
                             ['Health','Punch','Snake', 'Stone'],['Health','Punch','Racket', 'Smash']]
-
-        self.info_font = pygame.font.SysFont('toonaround', 18)
-        self.menu_characters_dict = {}
-        for i in range(6):
-            self.menu_characters_dict[self.players[i]] = [self.descriptions[i][:-1],self.stats[i],self.stats_names[i]]
-        # Number, Folder
         self.attacks_dict = ['media/Mage_animation/', 'media/Boxer_animation/',
                              'media/Dwarf_animation/', 'media/Soldier_animation/',
                              'media/Gorgone_animation/', 'media/Tenniswoman_animation/']
-
         self.player = Player(W, H, round(W / 2), round(23 / 216 * H), self.attacks_dict[self.character],self.platforms)
         self.player_sprites = pygame.sprite.Group()
         self.player_sprites.add(self.player)
 
+        # Menu values
+        self.info_font = pygame.font.SysFont('toonaround', 18)
+        self.menu_characters_dict = {}
+        for i in range(6):
+            self.menu_characters_dict[self.players[i]] = [self.descriptions[i][:-1], self.stats[i], self.stats_names[i]]
         self.title_font = pygame.font.SysFont('toonaround', 180)
-        self.title_text1 = self.title_font.render('Pygomania', True, (255, 255, 255))
-        self.title_text2 = self.title_font.render('Pygomania', True, (0, 0, 0))
+        self.title_font1 = self.title_font.render('Pygomania', True, (255, 255, 255))
+        self.title_font2 = self.title_font.render('Pygomania', True, (0, 0, 0))
 
         self.prompt_font = pygame.font.SysFont('toonaround', 50)
         self.prompt1 = self.prompt_font.render('Press Space to Continue', True, (255, 255, 255))
         self.prompt2 = self.prompt_font.render('Press Space to Continue', True, (0, 0, 0))
-        self.time = 0
-
         self.start_button = pygame.image.load('media/start_button.png')
         self.start_button = pygame.transform.scale(self.start_button, (230, 85))
         self.start_button_hovering = pygame.image.load('media/start_button_hovering.png')
         self.start_button_hovering = pygame.transform.scale(self.start_button_hovering, (230, 85))
+
+        self.title_text = self.text('toonaround', 90, 'Pygomania')
+        for i in range(3):
+
+        self.time = 0
 
         self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, self.H - 180, 230, 85)
 
@@ -85,15 +86,17 @@ class Game:
         # Server values
         self.connected = False
 
-    def text(self, font, fontsize, text, position):
+    def text(self, font, fontsize, text):
         font = pygame.font.SysFont(font, fontsize)
         text_white = font.render(text, True, (255, 255, 255))
-        text_black = font.render(text, True, (0, 0, 0))
-        self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)),
-                                      position[1] + round(fontsize / 25)))
-        self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width() / 2), position[1]))
-        n = text_white.get_width()
-        return n
+        text_black = font.render(text, True, (0, 0, 1))
+        surface = pygame.surface.Surface((text_white.get_width()+round(fontsize/20),text_white.get_height()+round(fontsize/25)),pygame.SRCALPHA)
+        surface.blit(text_black, (0,round(fontsize/25)))
+        surface.blit(text_white, (round(fontsize / 20), 0))
+        return surface
+        #self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)),
+        #                              position[1] + round(fontsize / 25)))
+        #self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width() / 2), position[1]))
 
     def box_text(self, surface, font, x_start, x_end, y_start, text, colour):
         x = x_start
@@ -125,7 +128,7 @@ class Game:
 
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
-        self.text('toonaround', 90, 'Pygomania', (self.WINDOW.get_width() / 2, 70))
+        self.WINDOW.blit(self.title_text,(round(self.W/2),70))
         self.mouse_rect.x, self.mouse_rect.y = pygame.mouse.get_pos()
         # First player line
         for i in range(3):
