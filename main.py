@@ -14,12 +14,18 @@ BG = pygame.image.load('media/background.jpg').convert()
 BG = pygame.transform.scale(BG, (W, H))
 
 game = Game(win, W, H, BG)
+clock = pygame.time.Clock()
+
+
+def update_fps():
+    fps = str(int(clock.get_fps()))
+    fps_text = game.prompt_font.render(fps + "  FPS", 1, pygame.Color("coral"))
+    return fps_text
 
 
 def main():
     playing = True
     fps = 60
-    clock = pygame.time.Clock()
 
     while playing:
 
@@ -37,12 +43,14 @@ def main():
             game.main_menu_func()
         else:
             game.update(dt)
-
+        win.blit(update_fps(),(0,0))
         pygame.display.flip()
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 game.keys[event.key] = True
+                if event.key == pygame.K_ESCAPE:
+                    game.pause = not game.pause
                 if event.key == pygame.K_w and not game.player.double_jumping :
                     game.player.jump(dt)
                 elif event.key == pygame.K_q:
@@ -58,7 +66,7 @@ def main():
                     game.player.change_animation()
                 elif event.key == pygame.K_s:
                     game.player.fall_down()
-                elif event.key == pygame.K_e and not game.player.planning_ulti:
+                elif event.key == pygame.K_e and not game.player.planning_ulti and game.player.ulti_time_seconds==0:
                     game.player.planning_ulti = True
                 elif event.key == pygame.K_d:
                     if game.keys.get(pygame.K_a):
@@ -72,7 +80,7 @@ def main():
                     game.main_menu = True
             elif event.type == pygame.KEYUP:
                 game.keys[event.key] = False
-                if event.key == pygame.K_e and game.player.planning_ulti and not game.player.ulti:
+                if event.key == pygame.K_e and game.player.planning_ulti and not game.player.ulti and game.player.ulti_time_seconds == 0:
                     game.player.planning_ulti = False
                     game.player.ulti = True
                     game.player.change_animation()

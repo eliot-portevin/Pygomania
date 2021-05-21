@@ -58,6 +58,10 @@ class Player(pygame.sprite.Sprite):
         self.ulti = False
         self.ulti_prev_surf = pygame.surface.Surface((150,(round(self.H*0.03))),pygame.SRCALPHA)
         self.ulti_prev_surf_alpha = 0
+        self.ulti_pos = 0
+        self.ulti_max_time = 5
+        self.ulti_time_seconds = 0
+        self.ulti_temp_time = 0
 
         self.image = self.idle_right_sprites[0][0]
         self.ground = round(self.H * 0.942)
@@ -146,18 +150,20 @@ class Player(pygame.sprite.Sprite):
                     self.image = self.jump_left_sprites[self.key][0]
                 self.tmp = self.jump_left_sprites[self.key][1]
             elif self.ulti:
-                #print(self.tmp)
-                self.ulti_prev_surf_alpha += 15
-                self.ulti_prev_surf.fill((0, 0, 0, self.ulti_prev_surf_alpha))
                 if self.key == self.ultimate_sheet.get_nb_sprites() - 1:
                     self.ulti = False
-                    self.ulti_prev_surf_alpha = 5
                     self.change_animation()
                 elif self.key == self.ultimate_sheet.get_nb_sprites()-2:
                     laser = Laser_Beam(self.W,self.H,self.ulti_pos)
                     self.laser_beam.add(laser)
                     self.key += 1
+                    self.ulti_prev_surf_alpha = 5
+                    self.ulti_prev_surf.fill((0, 0, 0, self.ulti_prev_surf_alpha))
+                    self.ulti_temp_time = pygame.time.get_ticks()
+                    self.ulti_time_seconds = 5
                 else:
+                    self.ulti_prev_surf_alpha += 15
+                    self.ulti_prev_surf.fill((0, 0, 0, self.ulti_prev_surf_alpha))
                     if self.moving_right:
                         self.key += 1
                         self.image = self.ultimate_right_sprites[self.key][0]
@@ -165,7 +171,6 @@ class Player(pygame.sprite.Sprite):
                         self.key += 1
                         self.image = self.ultimate_left_sprites[self.key][0]
                 self.tmp = self.ultimate_left_sprites[self.key][1]
-                print(self.ultimate_left_sprites[self.key])
             elif self.spelling:
                 if self.key == self.spell_sheet.get_nb_sprites() - 1:
                     self.spelling = False
@@ -202,7 +207,14 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(x=x, bottom=bottom)
             self.time = pygame.time.get_ticks()
 
-    def ulti_prevision(self,surf):
+    def timer(self, pos, font, surface, color, variable, temp_variable):
+        if pygame.time.get_ticks() - getattr(self, temp_variable) > 1000:
+            setattr(self, variable, getattr(self, variable)-1)
+            setattr(self, temp_variable,pygame.time.get_ticks())
+        text = font.render(str(getattr(self, variable)), True, color)
+        surface.blit(text, pos)
+
+    def ulti_prevision(self, surf):
         if self.planning_ulti:
             x = pygame.mouse.get_pos()[0]
             self.ulti_pos = x

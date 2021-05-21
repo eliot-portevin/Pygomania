@@ -180,6 +180,8 @@ class Game:
             self.player.move_right(dt)
 
         self.player.move(dt, self.platforms,self.WINDOW)
+        if self.player.ulti_time_seconds != 0:
+            self.player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
         self.player.fireballs.draw(self.WINDOW)
@@ -217,3 +219,5 @@ class Game:
                              (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
             self.WINDOW.blit(self.title_text2,
                              (round(self.W / 2 - self.title_text2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
+
+
