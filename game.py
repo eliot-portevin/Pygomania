@@ -41,6 +41,7 @@ class Game:
         # Players
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = -6
+        self.character_selected = 0
         self.descriptions = open('media/descriptions.txt', 'r').readlines()
         self.stats = [['70', '5', '15', '25'], ['85', '8', '15', '30'], ['10', '1', '1', '2'], ['70', '5', '15', '25'],
                       ['70', '5', '15', '25'], ['70', '5', '15', '25']]
@@ -51,9 +52,6 @@ class Game:
         self.attacks_dict = ['media/Mage_animation/', 'media/Boxer_animation/',
                              'media/Dwarf_animation/', 'media/Soldier_animation/',
                              'media/Gorgone_animation/', 'media/Tenniswoman_animation/']
-        self.player = Player(W, H, round(W / 2), round(23 / 216 * H), self.attacks_dict[self.character], self.platforms)
-        self.player_sprites = pygame.sprite.Group()
-        self.player_sprites.add(self.player)
 
         # Menu values
         self.info_font = pygame.font.SysFont('toonaround', 18)
@@ -92,7 +90,9 @@ class Game:
                 self.menu_rects.append(
                     pygame.rect.Rect(940 * x + 150, round(self.H / 5 * (y + 1.5)), self.rect_surface.get_width(),
                                      self.rect_surface.get_height()))
-
+        self.info_box = pygame.Surface((450, 350), pygame.SRCALPHA)
+        self.info_box.fill(self.black_transparent)
+        self.x_start = self.W / 2 - self.info_box.get_width() / 2 + 10
         self.time = 0
 
         self.prev_time = time.time()
@@ -115,9 +115,6 @@ class Game:
         x = pos[0] - round(surface.get_width() / 2)
         pos = (x, pos[1])
         return [surface, pos]
-        # self.WINDOW.blit(text_black, (round(position[0] - text_white.get_width() / 2 - round(fontsize / 20)),
-        #                              position[1] + round(fontsize / 25)))
-        # self.WINDOW.blit(text_white, (round(position[0] - text_white.get_width() / 2), position[1]))
 
     def box_text(self, surface, font, x_start, x_end, y_start, text, colour):
         x = x_start
@@ -152,13 +149,10 @@ class Game:
     def main_menu_func(self):
         self.WINDOW.blit(self.BG, (0, 0))
         self.WINDOW.blit(self.title_text[0], self.title_text[1])
-        # First player line
         for i in range(6):
             rect = self.menu_rects[i]
             self.WINDOW.blit(self.rect_surfaces[i], (rect.x, rect.y))
             self.WINDOW.blit(self.name_surfaces[i][0], self.name_surfaces[i][1])
-            # self.text('toonaround', 30, self.players[i], (150 + s.get_width() / 2, y + s.get_height() + 5))
-            # x = self.W - (150 + s.get_width())
 
         # Start button
         if not self.start:
@@ -169,12 +163,8 @@ class Game:
             pygame.draw.rect(self.WINDOW, (217, 215, 126), self.menu_rects[self.character], 10)
 
         # Information box
-        info_box = pygame.Surface((450, 350), pygame.SRCALPHA)
-        info_box.fill(self.black_transparent)
-        self.WINDOW.blit(info_box, (self.W / 2 - info_box.get_width() / 2, self.H / 3))
-
-        x_start = self.W / 2 - info_box.get_width() / 2 + 10
-        self.box_text(self.WINDOW, self.info_font, x_start, x_start + 430, self.H / 1.7 - 5,
+        self.WINDOW.blit(self.info_box, (self.W / 2 - self.info_box.get_width() / 2, self.H / 3))
+        self.box_text(self.WINDOW, self.info_font, self.x_start, self.x_start + 430, self.H / 1.7 - 5,
                       self.descriptions[self.character][:-1], self.white)
 
         self.stats_text()
@@ -189,15 +179,23 @@ class Game:
                     if rect.collidepoint(e.pos[0], e.pos[1]):
                         self.character = self.menu_rects.index(rect)
                 if self.start:
-                    self.main_menu= False
+                    self.main_menu = False
+                    self.player = Player(self.W, self.H, round(self.W / 2), round(23 / 216 * self.H), self.attacks_dict[self.character],
+                                         self.platforms)
+                    self.player_sprites = pygame.sprite.Group()
+                    self.player_sprites.add(self.player)
+
             elif e.type == pygame.MOUSEMOTION:
+                var = False
                 for rect in self.menu_rects:
                     if rect.collidepoint(e.pos[0], e.pos[1]):
-
                         index = self.menu_rects.index(rect)
-                        surface = self.rect_surfaces[index]
-                        surface.fill(self.button_colour_selected)
-                    else:
+                        if index == self.character_selected:
+                            var = True
+                        else:
+                            surface = self.rect_surfaces[index]
+                            surface.fill(self.button_colour_selected)
+                    elif not var:
                         index = self.menu_rects.index(rect)
                         surface = self.rect_surfaces[index]
                         surface.fill(self.button_colour)

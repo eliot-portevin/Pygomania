@@ -19,7 +19,7 @@ clock = pygame.time.Clock()
 
 def update_fps():
     fps = str(int(clock.get_fps()))
-    fps_text = game.prompt_font.render(fps + "  FPS", 1, pygame.Color("coral"))
+    fps_text = game.prompt_font.render(fps + "  FPS", 1, (130,100,70))
     return fps_text
 
 
