@@ -40,8 +40,8 @@ class Game:
 
         # Players
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
-        self.character = -6
-        self.character_selected = 0
+        self.character = -7
+        self.character_selected = -6
         self.descriptions = open('media/descriptions.txt', 'r').readlines()
         self.stats = [['70', '5', '15', '25'], ['85', '8', '15', '30'], ['10', '1', '1', '2'], ['70', '5', '15', '25'],
                       ['70', '5', '15', '25'], ['70', '5', '15', '25']]
@@ -137,12 +137,12 @@ class Game:
         x_stat = self.W / 2 + 180
         y = self.H / 3 + 20
         for i in range(4):
-            stat_name = self.info_font.render(str(self.stats_names[self.character][i]), True, self.white)
-            stat = self.info_font.render(str(self.stats[self.character][i]), True, self.white)
+            stat_name = self.info_font.render(str(self.stats_names[self.character_selected][i]), True, self.white)
+            stat = self.info_font.render(str(self.stats[self.character_selected][i]), True, self.white)
             self.WINDOW.blit(stat, (x_stat, y))
             self.WINDOW.blit(stat_name, (x_name, y))
             pygame.draw.rect(self.WINDOW, self.white, pygame.rect.Rect(self.W / 2 - 100, y + 5,
-                                                                       int(self.stats[self.character][i]) * 300 /
+                                                                       int(self.stats[self.character_selected][i]) * 300 /
                                                                        self.stats_max[i], 10))
             y += 40
 
@@ -164,10 +164,11 @@ class Game:
 
         # Information box
         self.WINDOW.blit(self.info_box, (self.W / 2 - self.info_box.get_width() / 2, self.H / 3))
-        self.box_text(self.WINDOW, self.info_font, self.x_start, self.x_start + 430, self.H / 1.7 - 5,
-                      self.descriptions[self.character][:-1], self.white)
+        if self.character_selected >= 0:
+            self.box_text(self.WINDOW, self.info_font, self.x_start, self.x_start + 430, self.H / 1.7 - 5,
+                          self.descriptions[self.character_selected][:-1], self.white)
 
-        self.stats_text()
+            self.stats_text()
 
     def main_menu_events(self):
         for e in pygame.event.get():
@@ -178,7 +179,7 @@ class Game:
                 for rect in self.menu_rects:
                     if rect.collidepoint(e.pos[0], e.pos[1]):
                         self.character = self.menu_rects.index(rect)
-                if self.start:
+                if self.start and self.character >= 0:
                     self.main_menu = False
                     self.player = Player(self.W, self.H, round(self.W / 2), round(23 / 216 * self.H), self.attacks_dict[self.character],
                                          self.platforms)
@@ -186,17 +187,16 @@ class Game:
                     self.player_sprites.add(self.player)
 
             elif e.type == pygame.MOUSEMOTION:
-                var = False
                 for rect in self.menu_rects:
+                    index = self.menu_rects.index(rect)
                     if rect.collidepoint(e.pos[0], e.pos[1]):
-                        index = self.menu_rects.index(rect)
+                        print(index,self.character_selected)
                         if index == self.character_selected:
-                            var = True
-                        else:
-                            surface = self.rect_surfaces[index]
-                            surface.fill(self.button_colour_selected)
-                    elif not var:
-                        index = self.menu_rects.index(rect)
+                            break
+                        surface = self.rect_surfaces[index]
+                        surface.fill(self.button_colour_selected)
+                        self.character_selected = index
+                    elif index != self.character_selected:
                         surface = self.rect_surfaces[index]
                         surface.fill(self.button_colour)
                 self.start = False
