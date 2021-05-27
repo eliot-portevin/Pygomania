@@ -1,0 +1,50 @@
+{ "frames": {
+   "punch0.png": {
+    "frame": { "x": 0, "y": 0, "w": 23, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 17 },
+    "sourceSize": { "w": 23, "h": 17 },
+    "duration": 100
+   },
+   "punch1.png": {
+    "frame": { "x": 23, "y": 0, "w": 23, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 17 },
+    "sourceSize": { "w": 23, "h": 17 },
+    "duration": 100
+   },
+   "punch2.png": {
+    "frame": { "x": 46, "y": 0, "w": 23, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 17 },
+    "sourceSize": { "w": 23, "h": 17 },
+    "duration": 100
+   },
+   "punch3.png": {
+    "frame": { "x": 69, "y": 0, "w": 23, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 17 },
+    "sourceSize": { "w": 23, "h": 17 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.27",
+  "image": "punch-sheet.png",
+  "format": "I8",
+  "size": { "w": 92, "h": 17 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

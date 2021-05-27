@@ -1,0 +1,50 @@
+{ "frames": {
+   "idle0.png": {
+    "frame": { "x": 0, "y": 0, "w": 17, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 17 },
+    "sourceSize": { "w": 17, "h": 17 },
+    "duration": 170
+   },
+   "idle1.png": {
+    "frame": { "x": 17, "y": 0, "w": 17, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 17 },
+    "sourceSize": { "w": 17, "h": 17 },
+    "duration": 170
+   },
+   "idle2.png": {
+    "frame": { "x": 34, "y": 0, "w": 17, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 17 },
+    "sourceSize": { "w": 17, "h": 17 },
+    "duration": 170
+   },
+   "idle3.png": {
+    "frame": { "x": 51, "y": 0, "w": 17, "h": 17 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 17 },
+    "sourceSize": { "w": 17, "h": 17 },
+    "duration": 170
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.27",
+  "image": "idle-sheet.png",
+  "format": "I8",
+  "size": { "w": 68, "h": 17 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
