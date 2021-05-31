@@ -190,7 +190,6 @@ class Game:
                 for rect in self.menu_rects:
                     index = self.menu_rects.index(rect)
                     if rect.collidepoint(e.pos[0], e.pos[1]):
-                        print(index,self.character_selected)
                         if index == self.character_selected:
                             break
                         surface = self.rect_surfaces[index]
