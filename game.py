@@ -1,5 +1,6 @@
 import pygame, time
-from player import Player
+from mage import Mage
+from boxer import Boxer
 from platforms import Platform
 
 
@@ -39,6 +40,7 @@ class Game:
         self.platforms.add(self.platform_1, self.platform_2, self.ground)
 
         # Players
+        self.character_class = {0:Mage,1:Boxer}
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = -7
         self.character_selected = -6
@@ -181,7 +183,7 @@ class Game:
                         self.character = self.menu_rects.index(rect)
                 if self.start and self.character >= 0:
                     self.main_menu = False
-                    self.player = Player(self.W, self.H, round(self.W / 2), round(23 / 216 * self.H), self.attacks_dict[self.character],
+                    self.player = self.character_class[self.character](self.W, self.H, round(self.W / 2), round(23 / 216 * self.H), self.attacks_dict[self.character],
                                          self.platforms)
                     self.player_sprites = pygame.sprite.Group()
                     self.player_sprites.add(self.player)
@@ -213,17 +215,12 @@ class Game:
             self.player.move_right(dt)
 
         self.player.move(dt, self.platforms, self.WINDOW)
-        if self.player.ulti_time_seconds != 0:
-            self.player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
+
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
-        self.player.fireballs.draw(self.WINDOW)
-        self.player.laser_beam.draw(self.WINDOW)
-        self.player.ulti_prevision(self.WINDOW)
-        for fireball in self.player.fireballs:
-            fireball.move(dt)
-        for laser in self.player.laser_beam:
-            laser.check()
+        if self.character == 0:
+            self.update_mage(dt)
+
         # Life Bar
         self.BG.blit(self.player.life_image, (40, 60))
         if self.tmp == 1:
@@ -232,7 +229,16 @@ class Game:
             self.BG.blit(shape_surf, (120, 66, 4 * self.player.life, 40))
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
-
+    def update_mage(self,dt):
+        if self.player.ulti_time_seconds != 0:
+            self.player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
+        self.player.fireballs.draw(self.WINDOW)
+        self.player.laser_beam.draw(self.WINDOW)
+        self.player.ulti_prevision(self.WINDOW)
+        for fireball in self.player.fireballs:
+            fireball.move(dt)
+        for laser in self.player.laser_beam:
+            laser.check()
     def events(self, dt):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
