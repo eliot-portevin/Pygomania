@@ -229,6 +229,7 @@ class Game:
             self.BG.blit(shape_surf, (120, 66, 4 * self.player.life, 40))
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
+
     def update_mage(self,dt):
         if self.player.ulti_time_seconds != 0:
             self.player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
@@ -239,6 +240,7 @@ class Game:
             fireball.move(dt)
         for laser in self.player.laser_beam:
             laser.check()
+
     def events(self, dt):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -248,9 +250,12 @@ class Game:
                 if event.key == pygame.K_w and not self.player.double_jumping:
                     self.player.jump(dt)
                 elif event.key == pygame.K_q:
-                    if not self.player.spelling and not self.player.ulti:
-                        self.player.spelling = True
-                        self.player.change_animation()
+                    if self.character == 0:
+                        if not self.player.spelling and not self.player.ulti:
+                            self.player.spelling = True
+                    elif self.character == 1:
+                        self.player.punching = True
+                    self.player.change_animation()
                 elif event.key == pygame.K_a:
                     if self.keys.get(pygame.K_d):
                         self.player.moving = False

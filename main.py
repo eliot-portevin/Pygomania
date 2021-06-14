@@ -1,8 +1,10 @@
 import pygame
+pygame.init()
+
 import time
 from game import Game
 
-pygame.init()
+
 
 win = pygame.display.set_mode((1440, 900))
 W, H = win.get_width(), win.get_height()
@@ -18,9 +20,12 @@ clock = pygame.time.Clock()
 
 
 def update_fps():
-    fps = str(int(clock.get_fps()))
-    fps_text = game.prompt_font.render(fps + "  FPS", 1, (130,100,70))
-    return fps_text
+    try:
+        fps = str(int(clock.get_fps()))
+        fps_text = game.prompt_font.render(fps + "  FPS", 1, (130,100,70))
+        return fps_text
+    except:
+        print("Error")
 
 
 def main():
@@ -45,7 +50,10 @@ def main():
         else:
             game.update(dt)
             game.events(dt)
-        win.blit(update_fps(),(0,0))
+        try:
+            win.blit(update_fps(),(0,200))
+        except:
+            pass
         pygame.display.flip()
 
 

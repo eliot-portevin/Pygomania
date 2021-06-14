@@ -35,4 +35,4 @@ class Spritesheet:
         x_o, y_o, w_o, h_o = original['x'], original['y'], size['w'], size['h']
         duration = sprite['duration']
         image = self.get_sprites(x, y, w, h, x_o, y_o, w_o, h_o)
-        return image,duration, w_o
+        return image,duration

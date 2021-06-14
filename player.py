@@ -58,14 +58,20 @@ class Player(pygame.sprite.Sprite):
         self.life_image = pygame.transform.scale(self.life_image, (57, 57))
         self.tmp = 500
 
-    def create_animations(self, sheet_name):
+    def create_animations(self, sheet_name,agrandissement=192/19,w_normal=True):
         setattr(self, sheet_name + "_sheet", Spritesheet(self.dir + sheet_name + "-sheet.png"))
         setattr(self, sheet_name + "_right_sprites", [])
         setattr(self, sheet_name + "_left_sprites", [])
         for i in range(getattr(self, sheet_name + "_sheet").get_nb_sprites()):
-            sprite, duration, size = getattr(self, sheet_name + "_sheet").parse_sprites(f"{sheet_name}{i}.png")
-            size = round(size * 192 / 19)
-            sprite = pygame.transform.scale(sprite, (size, size))
+            sprite, duration = getattr(self, sheet_name + "_sheet").parse_sprites(f"{sheet_name}{i}.png")
+            w,h = sprite.get_width(),sprite.get_height()
+            if w_normal:
+                size = round(sprite.get_width() * agrandissement)
+                size2 = round(h*size/w)
+            else:
+                size2 = round(sprite.get_height()*agrandissement)
+                size = round(w*size2/h)
+            sprite = pygame.transform.scale(sprite,(size,size2))
             getattr(self, sheet_name + "_right_sprites").append([sprite, duration])
             getattr(self, sheet_name + "_left_sprites").append([pygame.transform.flip(sprite, True, False), duration])
 
