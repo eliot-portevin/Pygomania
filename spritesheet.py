@@ -15,7 +15,7 @@ class Spritesheet:
 
         except FileNotFoundError:
             print("Sprite sheets couldn't be loaded")
-            pass
+            raise FileNotFoundError
 
     def get_nb_sprites(self):
         return len(self.data['frames'].keys())

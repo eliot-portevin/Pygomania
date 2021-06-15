@@ -1,7 +1,8 @@
-import pygame, time
+import pygame, time, socket
 from mage import Mage
 from boxer import Boxer
 from platforms import Platform
+from server_functions import ServerClass
 
 
 class Game:
@@ -10,6 +11,8 @@ class Game:
         self.W = W
         self.H = H
         self.BG = BG
+
+        self.server_funcs = ServerClass()
 
         # Colours
         self.white = (255, 255, 255)
@@ -23,6 +26,9 @@ class Game:
         # Menu variables
         self.playing = True
         self.menu_open = True
+        self.interface = False
+        self.create = False
+        self.join = False
         self.pause = False
         self.show_prompt = False
         self.main_menu = False
@@ -40,7 +46,7 @@ class Game:
         self.platforms.add(self.platform_1, self.platform_2, self.ground)
 
         # Players
-        self.character_class = {0:Mage,1:Boxer}
+        self.character_class = {0: Mage, 1: Boxer}
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = -7
         self.character_selected = -6
@@ -74,6 +80,13 @@ class Game:
         self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, self.H - 180, 230, 85)
         self.start = False
 
+        self.join_text = self.text('toonaround', 150, "Join", (700, 250))
+        self.join_rect = self.join_text[0].get_rect(topleft=self.join_text[1])
+        self.create_text = self.text('toonaround', 150, "Create", (700, 500))
+        self.create_rect = self.create_text[0].get_rect(topleft=self.create_text[1])
+        self.waiting = self.text("toonaround", 150, "Waiting for another player...", (round(self.W / 2), 400))
+
+
         self.title_text = self.text('toonaround', 90, 'Pygomania', (round(self.W / 2), 70))
         self.rect_surface = pygame.surface.Surface((200, 130), pygame.SRCALPHA)
         self.rect_surface.fill(self.button_colour)
@@ -104,6 +117,13 @@ class Game:
 
         # Server values
         self.connected = False
+        SERVER = socket.gethostbyname(socket.gethostname())
+        # self.SERVER = '92.107.201.191'
+        self.HEADER = 64
+        PORT = 10632
+        self.ADDR = (SERVER, PORT)
+        self.FORMAT = 'utf-8'
+        self.DISCONNECT_MSG = '!DISCONNECT'
 
     def text(self, font, fontsize, text, pos):
         font = pygame.font.SysFont(font, fontsize)
@@ -144,7 +164,8 @@ class Game:
             self.WINDOW.blit(stat, (x_stat, y))
             self.WINDOW.blit(stat_name, (x_name, y))
             pygame.draw.rect(self.WINDOW, self.white, pygame.rect.Rect(self.W / 2 - 100, y + 5,
-                                                                       int(self.stats[self.character_selected][i]) * 300 /
+                                                                       int(self.stats[self.character_selected][
+                                                                               i]) * 300 /
                                                                        self.stats_max[i], 10))
             y += 40
 
@@ -183,8 +204,10 @@ class Game:
                         self.character = self.menu_rects.index(rect)
                 if self.start and self.character >= 0:
                     self.main_menu = False
-                    self.player = self.character_class[self.character](self.W, self.H, round(self.W / 2), round(23 / 216 * self.H), self.attacks_dict[self.character],
-                                         self.platforms)
+                    self.player = self.character_class[self.character](self.W, self.H, round(self.W / 2),
+                                                                       round(23 / 216 * self.H),
+                                                                       self.attacks_dict[self.character],
+                                                                       self.platforms)
                     self.player_sprites = pygame.sprite.Group()
                     self.player_sprites.add(self.player)
 
@@ -205,6 +228,8 @@ class Game:
                     self.start = True
 
     def connect(self):
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client.connect(self.ADDR)
         self.connected = True
 
     def update(self, dt):
@@ -230,7 +255,7 @@ class Game:
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
-    def update_mage(self,dt):
+    def update_mage(self, dt):
         if self.player.ulti_time_seconds != 0:
             self.player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
         self.player.fireballs.draw(self.WINDOW)
@@ -318,7 +343,7 @@ class Game:
             elif e.type == pygame.KEYUP:
                 if e.key in {pygame.K_SPACE, pygame.K_KP_ENTER}:
                     self.menu_open = False
-                    self.main_menu = True
+                    self.interface = True
 
     def pause_screen(self):
         if self.pause:
@@ -326,3 +351,40 @@ class Game:
                              (round(self.W / 2 - self.title_font2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
             self.WINDOW.blit(self.title_font2,
                              (round(self.W / 2 - self.title_font2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
+
+    def interface_screen(self):
+        if not self.join and not self.create:
+            self.WINDOW.blit(self.join_text[0], self.join_text[1])
+            self.WINDOW.blit(self.create_text[0], self.create_text[1])
+        elif self.create:
+            self.WINDOW.blit(self.waiting[0], self.waiting[1])
+        elif self.join:
+            for i in self.server_funcs.games:
+                self.WINDOW.blit(i[1][0], i[1][1])
+
+    def interface_events(self):
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                self.playing = False
+                pygame.quit()
+            elif e.type == pygame.MOUSEBUTTONUP:
+                if e.button == 1:
+                    print(e.pos)
+                    if not self.join and not self.create:
+                        if self.join_rect.collidepoint(e.pos):
+                            self.join = True
+                            print("sending")
+                            self.server_funcs.send("Games", self.client)
+                            self.server_funcs.games = self.server_funcs.receive(self.client)
+                            for i in range(len(self.server_funcs.games)):
+                                text = self.text('toonaround', 60, self.server_funcs.games[i],
+                                                 (round(self.W / 2), i * 300 + 200))
+                                self.server_funcs.games[i] = [self.server_funcs.games[i], text]
+                        elif self.create_rect.collidepoint(e.pos):
+                            self.server_funcs.send("Create", self.client)
+                            self.create = True
+                    elif self.join:
+                        rects = []
+                        for i in range(len(self.server_funcs.games)):
+                            if i[1][0].get_rect(topleft=i[1][1]).collidepoint(e.pos):
+                                self.server_funcs.send(["join",i[0]],self.client)

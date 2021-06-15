@@ -5,7 +5,6 @@ import time
 from game import Game
 
 
-
 win = pygame.display.set_mode((1440, 900))
 W, H = win.get_width(), win.get_height()
 
@@ -39,9 +38,12 @@ def main():
         win.blit(BG, (0, 0))
         if not game.connected:
             game.connect()
-        if game.menu_open:
+        elif game.menu_open:
             game.menu_update()
             game.menu_events()
+        elif game.interface:
+            game.interface_screen()
+            game.interface_events()
         elif game.pause:
             game.pause_screen()
         elif game.main_menu:
