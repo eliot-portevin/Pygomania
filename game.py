@@ -1,4 +1,4 @@
-import pygame, time, socket
+import pygame, time, socket, threading
 from mage import Mage
 from boxer import Boxer
 from platforms import Platform
@@ -164,9 +164,7 @@ class Game:
             self.WINDOW.blit(stat, (x_stat, y))
             self.WINDOW.blit(stat_name, (x_name, y))
             pygame.draw.rect(self.WINDOW, self.white, pygame.rect.Rect(self.W / 2 - 100, y + 5,
-                                                                       int(self.stats[self.character_selected][
-                                                                               i]) * 300 /
-                                                                       self.stats_max[i], 10))
+                int(self.stats[self.character_selected][i]) * 300 / self.stats_max[i], 10))
             y += 40
 
     def main_menu_func(self):
@@ -230,6 +228,7 @@ class Game:
     def connect(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client.connect(self.ADDR)
+        self.server_funcs.send(socket.gethostname(),self.client)
         self.connected = True
 
     def update(self, dt):
@@ -369,11 +368,11 @@ class Game:
                 pygame.quit()
             elif e.type == pygame.MOUSEBUTTONUP:
                 if e.button == 1:
-                    print(e.pos)
+                    #print(e.pos)
                     if not self.join and not self.create:
                         if self.join_rect.collidepoint(e.pos):
                             self.join = True
-                            print("sending")
+                            #print("sending")
                             self.server_funcs.send("Games", self.client)
                             self.server_funcs.games = self.server_funcs.receive(self.client)
                             for i in range(len(self.server_funcs.games)):
@@ -381,10 +380,14 @@ class Game:
                                                  (round(self.W / 2), i * 300 + 200))
                                 self.server_funcs.games[i] = [self.server_funcs.games[i], text]
                         elif self.create_rect.collidepoint(e.pos):
-                            self.server_funcs.send("Create", self.client)
+                            self.server_funcs.send(["Create", socket.gethostname()], self.client)
                             self.create = True
                     elif self.join:
                         rects = []
-                        for i in range(len(self.server_funcs.games)):
+                        for i in self.server_funcs.games:
                             if i[1][0].get_rect(topleft=i[1][1]).collidepoint(e.pos):
                                 self.server_funcs.send(["join",i[0]],self.client)
+                                response = self.server_funcs.receive(self.client)
+                                if response :
+                                    # Begin the game
+                                    pass

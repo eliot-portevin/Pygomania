@@ -54,17 +54,23 @@ def handle_clients(conn,addr):
         print(f"RECEIVED : {message} from {addr}")
         if message == "Games":
             s.send(s.games, conn)
-        elif message == "Create":
-            s.games.append(addr[0])
+        elif message[0] == "Create":
+            s.games.append(message[1])
         elif message[0] == "join":
-            # Send to conn linked to game that the game will start
-            # Launch game
-            pass
+            if message[1] in s.games:
+                s.games[s.games.index(message[1])] = [conn,s.adress[s.games[s.games.index(message[1])]]]
+                for i in s.games[s.games.index(message[1])]:
+                    s.send(True,i)
+            else:
+                s.send(False,conn)
+            print(s.games, s.adress)
+
 def start():
     server.listen()
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
+        s.adress[s.receive(conn)] = conn
         thread = threading.Thread(target=handle_clients, args=(conn, addr))
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
