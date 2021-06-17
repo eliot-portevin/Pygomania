@@ -382,12 +382,20 @@ class Game:
                         elif self.create_rect.collidepoint(e.pos):
                             self.server_funcs.send(["Create", socket.gethostname()], self.client)
                             self.create = True
+                            thread = threading.Thread(target=self.waiting_receive)
+                            thread.start()
                     elif self.join:
                         rects = []
                         for i in self.server_funcs.games:
                             if i[1][0].get_rect(topleft=i[1][1]).collidepoint(e.pos):
                                 self.server_funcs.send(["join",i[0]],self.client)
                                 response = self.server_funcs.receive(self.client)
-                                if response :
-                                    # Begin the game
-                                    pass
+                                if response:
+                                    self.interface = False
+                                    self.main_menu = True
+
+    def waiting_receive(self):
+        message = self.server_funcs.receive(self.client)
+        if message:
+            self.interface = False
+            self.main_menu = True

@@ -17,7 +17,8 @@ server.bind(ADDR)
 class ServerClass:
     def __init__(self):
         self.adress = {}
-        self.games = []
+        self.ingame = {}
+        self.games = {}
 
     def send(self,msg,client):
         print(f"The message you are trying to send is {msg}.")
@@ -48,29 +49,41 @@ s = ServerClass()
 
 def handle_clients(conn,addr):
     connected = True
-    playing = False
     while connected:
         message = s.receive(conn)
         print(f"RECEIVED : {message} from {addr}")
-        if message == "Games":
-            s.send(s.games, conn)
+        if message == DISCONNECT_MSG:
+            for i in s.games.values():
+                if conn in i:
+                    s.send(DISCONNECT_MSG,i[i.index(conn)+1%2])
+                    del s.games[message[1]]
+            if conn in s.ingame.keys():
+                del s.ingame[conn]
+            connected = False
+        elif message[0] == "Play":
+            game = s.games[s.ingame[conn]]
+            s.send(message[1],game[game.index(conn)+1%2])
+        elif message == "Games":
+            s.send(s.games.keys(), conn)
         elif message[0] == "Create":
-            s.games.append(message[1])
+            s.games[message[1]] = [conn]
+            s.ingame[conn] = message[1]
         elif message[0] == "join":
-            if message[1] in s.games:
-                s.games[s.games.index(message[1])] = [conn,s.adress[s.games[s.games.index(message[1])]]]
-                for i in s.games[s.games.index(message[1])]:
+            print(s.games,s.adress)
+            if message[1] in s.games.keys():
+                s.games[message[1]].append(conn)
+                s.ingame[conn] = message[1]
+                for i in s.games[message[1]]:
                     s.send(True,i)
             else:
                 s.send(False,conn)
             print(s.games, s.adress)
-
 def start():
     server.listen()
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
-        s.adress[s.receive(conn)] = conn
+        s.adress[conn] = s.receive(conn)
         thread = threading.Thread(target=handle_clients, args=(conn, addr))
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
