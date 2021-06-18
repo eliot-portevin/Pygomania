@@ -5,7 +5,7 @@ import time
 from game import Game
 
 
-win = pygame.display.set_mode((1440, 900))
+win = pygame.display.set_mode((1000,700))
 W, H = win.get_width(), win.get_height()
 
 pygame.display.set_caption('Pygomania')
@@ -44,8 +44,6 @@ def main():
         elif game.interface:
             game.interface_screen()
             game.interface_events()
-        elif game.pause:
-            game.pause_screen()
         elif game.main_menu:
             game.main_menu_func()
             game.main_menu_events()

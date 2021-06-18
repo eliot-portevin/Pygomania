@@ -34,10 +34,9 @@ class Game:
         self.main_menu = False
         self.waiting_for_other = False
         self.keys = {}
-        self.key_events = {} # True for down and False for up
+        self.key_events = {pygame.KEYDOWN: [], pygame.KEYUP: []}
+        self.mouse_events = {pygame.MOUSEBUTTONDOWN: [], pygame.MOUSEBUTTONUP: []}
         self.mouse_buttons = {}
-        self.mouse_events = {}
-
         # Platforms
         self.platforms = pygame.sprite.Group()
         surface = pygame.surface.Surface((200, 50), pygame.SRCALPHA)
@@ -135,7 +134,6 @@ class Game:
         # toutes les touches vraies, les touches event, les boutons de la souris,
         # les boutons event, la position de la souris
 
-
     def text(self, font, fontsize, text, pos):
         font = pygame.font.SysFont(font, fontsize)
         text_white = font.render(text, True, (255, 255, 255))
@@ -204,6 +202,7 @@ class Game:
                 self.stats_text()
         else:
             self.WINDOW.blit(self.waiting[0], self.waiting[1])
+
     def main_menu_events(self):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -218,7 +217,7 @@ class Game:
                     if self.player_2:
                         self.main_menu = False
                         x = round(self.W/5)
-                    self.player = self.character_class[self.character](self.W, self.H, round(self.W / 2), x,
+                    self.player = self.character_class[self.character](self.W, self.H, x, round(23 / 216 * self.H),
                                                                       self.attacks_dict[self.character], self.platforms)
                     self.server_funcs.send(["Play",self.character],self.client)
 
@@ -245,25 +244,30 @@ class Game:
         self.client.connect(self.ADDR)
         self.server_funcs.send(socket.gethostname(), self.client)
         self.connected = True
+
     def move_character(self,keys,player,dt):
         if keys.get(pygame.K_a):
             player.move_left(dt)
         if keys.get(pygame.K_d):
             player.move_right(dt)
+
     def update(self, dt):
+        send_object = [self.keys, self.key_events, self.mouse_buttons, self.mouse_events, pygame.mouse.get_pos()]
+        self.server_funcs.send(["Play", send_object], self.client)
+        self.receive_object = self.server_funcs.receive(self.client)
 
         self.move_character(self.keys,self.player,dt)
         self.move_character(self.receive_object[0],self.player_2,dt)
 
         for players in self.player_sprites:
             players.move(dt, self.platforms, self.WINDOW)
-            self.BG.blit(self.player.life_image, (40, 60))
+        self.BG.blit(self.player.life_image, (40, 60))
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
-        if self.character == 0 :
-            self.update_mage(dt)
-        elif self.character_2 == 0:
-            self.update_mage(dt)
+        if self.character == 0:
+            self.update_mage(dt,self.player)
+        if self.character_2 == 0:
+            self.update_mage(dt,self.player_2)
         # Life Bar
 
         if self.tmp == 1:
@@ -273,29 +277,25 @@ class Game:
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
-        send_object = [self.keys,self.key_events,self.mouse_buttons,self.mouse_events,pygame.mouse.get_pos()]
-        self.server_funcs.send(["Play",send_object],self.client)
-        self.receive_object = self.server_funcs.receive(self.client)
+    def update_mage(self, dt, player):
+        if player.ulti_time_seconds != 0:
+            player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
+        player.fireballs.draw(self.WINDOW)
+        player.laser_beam.draw(self.WINDOW)
+        player.ulti_prevision(self.WINDOW)
 
-    def update_mage(self, dt):
-        if self.player.ulti_time_seconds != 0:
-            self.player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
-        self.player.fireballs.draw(self.WINDOW)
-        self.player.laser_beam.draw(self.WINDOW)
-        self.player.ulti_prevision(self.WINDOW)
-        for fireball in self.player.fireballs:
+        for fireball in player.fireballs:
             fireball.move(dt)
-        for laser in self.player.laser_beam:
+        for laser in player.laser_beam:
             laser.check()
 
     def events(self, dt):
-        self.key_events,self.mouse_events = {},{}
+        self.key_events = {pygame.KEYDOWN: [], pygame.KEYUP: []}
+        self.mouse_events = {pygame.MOUSEBUTTONDOWN: [], pygame.MOUSEBUTTONUP: []}
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                self.key_events[event.key] = True
+                self.key_events[pygame.KEYDOWN].append(event.key)
                 self.keys[event.key] = True
-                if event.key == pygame.K_ESCAPE:
-                    self.pause = not self.pause
                 if event.key == pygame.K_w and not self.player.double_jumping:
                     self.player.jump(dt)
                 elif event.key == pygame.K_q:
@@ -324,7 +324,7 @@ class Game:
                         self.player.moving = True
                     self.player.change_animation()
             elif event.type == pygame.KEYUP:
-                self.key_events[event.key] = False
+                self.key_events[pygame.KEYUP].append(event.key)
                 self.keys[event.key] = False
                 if event.key == pygame.K_e and self.player.planning_ulti and not self.player.ulti and self.player.ulti_time_seconds == 0:
                     self.player.planning_ulti = False
@@ -340,17 +340,63 @@ class Game:
                         self.player.moving_right = True
                         self.player.moving = True
                     self.player.change_animation()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.mouse_events[event.button] = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                self.mouse_events[pygame.MOUSEBUTTONDOWN].append(event.button)
                 self.mouse_buttons[event.button] = True
-            if event.type == pygame.MOUSEBUTTONUP:
-                self.mouse_events[event.button] = False
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.mouse_events[pygame.MOUSEBUTTONUP].append(event.button)
                 self.mouse_buttons[event.button] = False
                 if event.button == 3 and self.player.planning_ulti:
                     self.player.planning_ulti = False
             elif event.type == pygame.QUIT:
                 self.playing = False
                 pygame.quit()
+        for keydown in self.receive_object[1][pygame.KEYDOWN]:
+            if keydown == pygame.K_w and not self.player_2.double_jumping:
+                self.player_2.jump(dt)
+            elif keydown == pygame.K_q:
+                if self.character_2 == 0:
+                    if not self.player_2.spelling and not self.player_2.ulti:
+                        self.player_2.spelling = True
+                elif self.character_2 == 1:
+                    self.player_2.punching = True
+                self.player_2.change_animation()
+            elif keydown == pygame.K_a:
+                if self.receive_object[0].get(pygame.K_d):
+                    self.player_2.moving = False
+                else:
+                    self.player_2.moving_right = False
+                    self.player_2.moving = True
+                self.player_2.change_animation()
+            elif keydown == pygame.K_s:
+                self.player_2.fall_down()
+            elif keydown == pygame.K_e and not self.player_2.planning_ulti and self.player_2.ulti_time_seconds == 0:
+                self.player_2.planning_ulti = True
+            elif keydown == pygame.K_d:
+                if self.receive_object[0].get(pygame.K_a):
+                    self.player_2.moving = False
+                else:
+                    self.player_2.moving_right = True
+                    self.player_2.moving = True
+                self.player_2.change_animation()
+        for keyup in self.receive_object[1][pygame.KEYUP]:
+            if keyup == pygame.K_e and self.player_2.planning_ulti and not self.player_2.ulti and self.player_2.ulti_time_seconds == 0:
+                self.player_2.planning_ulti = False
+                self.player_2.ulti = True
+                self.player_2.change_animation()
+            if keyup in {pygame.K_a, pygame.K_d}:
+                if not (self.receive_object[0].get(pygame.K_a) or self.receive_object[0].get(pygame.K_d)):
+                    self.player_2.moving = False
+                elif self.receive_object[0].get(pygame.K_a):
+                    self.player_2.moving = True
+                    self.player_2.moving_right = False
+                elif self.receive_object[0].get(pygame.K_d):
+                    self.player_2.moving_right = True
+                    self.player_2.moving = True
+                self.player_2.change_animation()
+        for mouseup in self.receive_object[3][pygame.MOUSEBUTTONUP]:
+            if mouseup == 3 and self.player_2.planning_ulti:
+                self.player_2.planning_ulti = False
 
     def menu_update(self):
         self.WINDOW.blit(self.title_font2,

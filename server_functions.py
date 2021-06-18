@@ -8,7 +8,7 @@ class ServerClass:
         self.games = []
 
     def send(self,msg,client):
-        print(f"The message you are trying to send is {msg}.")
+        #print(f"The message you are trying to send is {msg}.")
         message = pickle.dumps(msg)
         msg_length = len(message)
         send_length = str(msg_length).encode('utf-8')
@@ -27,5 +27,5 @@ class ServerClass:
             message = client.recv(msg_length)
             #print(f"ENCRYPTED MESSAGE RECEIVED : {message}")
             message = pickle.loads(message)
-            print(f"DECRYPTED MESSAGE RECEIVED : {message}")
+            #print(f"DECRYPTED MESSAGE RECEIVED : {message}")
             return message
