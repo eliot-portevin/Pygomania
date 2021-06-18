@@ -34,6 +34,9 @@ class Game:
         self.main_menu = False
         self.waiting_for_other = False
         self.keys = {}
+        self.key_events = {} # True for down and False for up
+        self.mouse_buttons = {}
+        self.mouse_events = {}
 
         # Platforms
         self.platforms = pygame.sprite.Group()
@@ -128,6 +131,9 @@ class Game:
         self.ADDR = (SERVER, PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MSG = '!DISCONNECT'
+        self.send_object = []
+        # toutes les touches vraies, les touches event, la position de la souris, les boutons de la souris
+
 
     def text(self, font, fontsize, text, pos):
         font = pygame.font.SysFont(font, fontsize)
@@ -262,6 +268,10 @@ class Game:
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
+        self.send_object = [self.keys,self.key_events,self.mouse_buttons,self.mouse_events,pygame.mouse.get_pos()]
+        self.server_funcs.send(["Play",self.send_object],self.client)
+
+
     def update_mage(self, dt):
         if self.player.ulti_time_seconds != 0:
             self.player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
@@ -274,8 +284,10 @@ class Game:
             laser.check()
 
     def events(self, dt):
+        self.key_events,self.mouse_events = {},{}
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
+                self.key_events[event.key] = True
                 self.keys[event.key] = True
                 if event.key == pygame.K_ESCAPE:
                     self.pause = not self.pause
@@ -307,6 +319,7 @@ class Game:
                         self.player.moving = True
                     self.player.change_animation()
             elif event.type == pygame.KEYUP:
+                self.key_events[event.key] = False
                 self.keys[event.key] = False
                 if event.key == pygame.K_e and self.player.planning_ulti and not self.player.ulti and self.player.ulti_time_seconds == 0:
                     self.player.planning_ulti = False
@@ -322,7 +335,12 @@ class Game:
                         self.player.moving_right = True
                         self.player.moving = True
                     self.player.change_animation()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.mouse_events[event.button] = True
+                self.mouse_buttons[event.button] = True
             if event.type == pygame.MOUSEBUTTONUP:
+                self.mouse_events[event.button] = False
+                self.mouse_buttons[event.button] = False
                 if event.button == 3 and self.player.planning_ulti:
                     self.player.planning_ulti = False
             elif event.type == pygame.QUIT:
@@ -380,7 +398,6 @@ class Game:
                     if not self.join and not self.create:
                         if self.join_rect.collidepoint(e.pos):
                             self.join = True
-                            # print("sending")
                             self.server_funcs.send("Games", self.client)
                             self.server_funcs.games = self.server_funcs.receive(self.client)
                             for i in range(len(self.server_funcs.games)):
