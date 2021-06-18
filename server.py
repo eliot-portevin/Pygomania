@@ -26,8 +26,8 @@ class ServerClass:
         msg_length = len(message)
         send_length = str(msg_length).encode(FORMAT)
         send_length += b' ' * (HEADER - len(send_length))
-        print(f"The encrypted message is {message}")
-        print(f"His length is {send_length}")
+        #print(f"The encrypted message is {message}")
+        #print(f"His length is {send_length}")
         client.send(send_length)
         # print(f'The length is {send_length}')
         client.send(message)
@@ -36,9 +36,9 @@ class ServerClass:
         msg_length = client.recv(HEADER).decode(FORMAT)
         if msg_length:
             msg_length = int(msg_length)
-            print(f"The message received is {msg_length} characters long.")
+            #print(f"The message received is {msg_length} characters long.")
             message = client.recv(msg_length)
-            print(f"ENCRYPTED MESSAGE RECEIVED : {message}")
+            #print(f"ENCRYPTED MESSAGE RECEIVED : {message}")
             message = pickle.loads(message)
             print(f"DECRYPTED MESSAGE RECEIVED : {message}")
             return message
@@ -62,14 +62,13 @@ def handle_clients(conn,addr):
             connected = False
         elif message[0] == "Play":
             game = s.games[s.ingame[conn]]
-            s.send(message[1],game[game.index(conn)+1%2])
+            s.send(message[1],game[(game.index(conn)+1)%2])
         elif message == "Games":
-            s.send(s.games.keys(), conn)
+            s.send(list(s.games.keys()), conn)
         elif message[0] == "Create":
             s.games[message[1]] = [conn]
             s.ingame[conn] = message[1]
         elif message[0] == "join":
-            print(s.games,s.adress)
             if message[1] in s.games.keys():
                 s.games[message[1]].append(conn)
                 s.ingame[conn] = message[1]
@@ -77,7 +76,6 @@ def handle_clients(conn,addr):
                     s.send(True,i)
             else:
                 s.send(False,conn)
-            print(s.games, s.adress)
 def start():
     server.listen()
     print(f"[LISTENING] Server is listening on {SERVER}")

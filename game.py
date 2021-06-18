@@ -32,6 +32,7 @@ class Game:
         self.pause = False
         self.show_prompt = False
         self.main_menu = False
+        self.waiting_for_other = False
         self.keys = {}
 
         # Platforms
@@ -51,6 +52,7 @@ class Game:
         self.player_2 = None
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = -7
+        self.character_2 = 0
         self.character_selected = -6
         self.descriptions = open('media/descriptions.txt', 'r').readlines()
         self.stats = [['70', '5', '15', '25'], ['85', '8', '15', '30'], ['10', '1', '1', '2'], ['70', '5', '15', '25'],
@@ -62,6 +64,7 @@ class Game:
         self.attacks_dict = ['media/Mage_animation/', 'media/Boxer_animation/',
                              'media/Dwarf_animation/', 'media/Soldier_animation/',
                              'media/Gorgone_animation/', 'media/Tenniswoman_animation/']
+        self.player_sprites = pygame.sprite.Group()
 
         # Menu values
         self.info_font = pygame.font.SysFont('toonaround', 18)
@@ -87,7 +90,6 @@ class Game:
         self.create_text = self.text('toonaround', 150, "Create", (700, 500))
         self.create_rect = self.create_text[0].get_rect(topleft=self.create_text[1])
         self.waiting = self.text("toonaround", 150, "Waiting for another player...", (round(self.W / 2), 400))
-
 
         self.title_text = self.text('toonaround', 90, 'Pygomania', (round(self.W / 2), 70))
         self.rect_surface = pygame.surface.Surface((200, 130), pygame.SRCALPHA)
@@ -166,33 +168,35 @@ class Game:
             self.WINDOW.blit(stat, (x_stat, y))
             self.WINDOW.blit(stat_name, (x_name, y))
             pygame.draw.rect(self.WINDOW, self.white, pygame.rect.Rect(self.W / 2 - 100, y + 5,
-                int(self.stats[self.character_selected][i]) * 300 / self.stats_max[i], 10))
+                                                                       int(self.stats[self.character_selected][
+                                                                               i]) * 300 / self.stats_max[i], 10))
             y += 40
 
     def main_menu_func(self):
-        self.WINDOW.blit(self.BG, (0, 0))
-        self.WINDOW.blit(self.title_text[0], self.title_text[1])
-        for i in range(6):
-            rect = self.menu_rects[i]
-            self.WINDOW.blit(self.rect_surfaces[i], (rect.x, rect.y))
-            self.WINDOW.blit(self.name_surfaces[i][0], self.name_surfaces[i][1])
+        if not self.waiting_for_other:
+            self.WINDOW.blit(self.title_text[0], self.title_text[1])
+            for i in range(6):
+                rect = self.menu_rects[i]
+                self.WINDOW.blit(self.rect_surfaces[i], (rect.x, rect.y))
+                self.WINDOW.blit(self.name_surfaces[i][0], self.name_surfaces[i][1])
 
-        # Start button
-        if not self.start:
-            self.WINDOW.blit(self.start_button, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
+            # Start button
+            if not self.start:
+                self.WINDOW.blit(self.start_button, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
+            else:
+                self.WINDOW.blit(self.start_button_hovering, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
+            if self.character >= 0:
+                pygame.draw.rect(self.WINDOW, (217, 215, 126), self.menu_rects[self.character], 10)
+
+            # Information box
+            self.WINDOW.blit(self.info_box, (self.W / 2 - self.info_box.get_width() / 2, self.H / 3))
+            if self.character_selected >= 0:
+                self.box_text(self.WINDOW, self.info_font, self.x_start, self.x_start + 430, self.H / 1.7 - 5,
+                              self.descriptions[self.character_selected][:-1], self.white)
+
+                self.stats_text()
         else:
-            self.WINDOW.blit(self.start_button_hovering, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
-        if self.character >= 0:
-            pygame.draw.rect(self.WINDOW, (217, 215, 126), self.menu_rects[self.character], 10)
-
-        # Information box
-        self.WINDOW.blit(self.info_box, (self.W / 2 - self.info_box.get_width() / 2, self.H / 3))
-        if self.character_selected >= 0:
-            self.box_text(self.WINDOW, self.info_font, self.x_start, self.x_start + 430, self.H / 1.7 - 5,
-                          self.descriptions[self.character_selected][:-1], self.white)
-
-            self.stats_text()
-
+            self.WINDOW.blit(self.waiting[0], self.waiting[1])
     def main_menu_events(self):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -203,12 +207,14 @@ class Game:
                     if rect.collidepoint(e.pos[0], e.pos[1]):
                         self.character = self.menu_rects.index(rect)
                 if self.start and self.character >= 0:
-                    self.main_menu = False
-                    self.player = self.character_class[self.character](self.W, self.H, round(self.W / 2),
-                                                                       round(23 / 216 * self.H),
-                                                                       self.attacks_dict[self.character],
-                                                                       self.platforms)
-                    self.player_sprites = pygame.sprite.Group()
+                    x = round(4 * self.W / 5)
+                    if self.player_2:
+                        self.main_menu = False
+                        x = round(self.W/5)
+                    self.player = self.character_class[self.character](self.W, self.H, round(self.W / 2), x,
+                                                                      self.attacks_dict[self.character], self.platforms)
+                    self.server_funcs.send(["Play",self.character],self.client)
+
                     self.player_sprites.add(self.player)
 
             elif e.type == pygame.MOUSEMOTION:
@@ -230,7 +236,7 @@ class Game:
     def connect(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client.connect(self.ADDR)
-        self.server_funcs.send(socket.gethostname(),self.client)
+        self.server_funcs.send(socket.gethostname(), self.client)
         self.connected = True
 
     def update(self, dt):
@@ -239,8 +245,8 @@ class Game:
             self.player.move_left(dt)
         if self.keys.get(pygame.K_d):
             self.player.move_right(dt)
-
-        self.player.move(dt, self.platforms, self.WINDOW)
+        for players in self.player_sprites:
+            players.move(dt, self.platforms, self.WINDOW)
 
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
@@ -370,11 +376,11 @@ class Game:
                 pygame.quit()
             elif e.type == pygame.MOUSEBUTTONUP:
                 if e.button == 1:
-                    #print(e.pos)
+                    # print(e.pos)
                     if not self.join and not self.create:
                         if self.join_rect.collidepoint(e.pos):
                             self.join = True
-                            #print("sending")
+                            # print("sending")
                             self.server_funcs.send("Games", self.client)
                             self.server_funcs.games = self.server_funcs.receive(self.client)
                             for i in range(len(self.server_funcs.games)):
@@ -387,25 +393,28 @@ class Game:
                             thread = threading.Thread(target=self.waiting_receive)
                             thread.start()
                     elif self.join:
-                        rects = []
                         for i in self.server_funcs.games:
                             if i[1][0].get_rect(topleft=i[1][1]).collidepoint(e.pos):
-                                self.server_funcs.send(["join",i[0]],self.client)
-                                response = self.server_funcs.receive(self.client)
-                                if response:
-                                    self.interface = False
-                                    self.main_menu = True
+                                self.server_funcs.send(["join", i[0]], self.client)
+                                self.create = True
+                                thread = threading.Thread(target=self.waiting_receive)
+                                thread.start()
+                                break
 
     def waiting_receive(self):
         message = self.server_funcs.receive(self.client)
-        if message:
-            if __name__ == '__main__':
-                if self.interface:
-                    self.interface = False
-                    self.main_menu = True
-                elif self.main_menu:
-                    if self.player:
-                        self.player_2 = self.character_class[message[1]](self.W, self.H, round(self.W / 2),
-                                                                       round(23 / 216 * self.H),
-                                                                       self.attacks_dict[message[1]],
-                                                                       self.platforms)
+        if message is not None:
+            if self.interface:
+                self.interface = False
+                self.main_menu = True
+                thread = threading.Thread(target=self.waiting_receive)
+                thread.start()
+            elif self.main_menu:
+                x = round(4 * self.W / 5)
+                if self.player:
+                    x = round(self.W / 5)
+                    self.main_menu = False
+                self.character_2 = message
+                self.player_2 = self.character_class[message](self.W, self.H, x, round(23 / 216 * self.H),
+                                                                 self.attacks_dict[message], self.platforms)
+                self.player_sprites.add(self.player_2)

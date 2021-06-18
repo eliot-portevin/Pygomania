@@ -10,13 +10,10 @@ class Mage(Player):
         self.fireballs = pygame.sprite.Group()
         self.laser_beam = pygame.sprite.GroupSingle()
 
-        self.create_animations('idle')
         self.create_animations('move')
         self.create_animations('spell')
         self.create_animations('jump')
         self.create_animations('ultimate')
-
-
 
         self.planning_ulti = False
         self.ulti = False
