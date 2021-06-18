@@ -131,8 +131,9 @@ class Game:
         self.ADDR = (SERVER, PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MSG = '!DISCONNECT'
-        self.send_object = []
-        # toutes les touches vraies, les touches event, la position de la souris, les boutons de la souris
+        self.receive_object = []
+        # toutes les touches vraies, les touches event, les boutons de la souris,
+        # les boutons event, la position de la souris
 
 
     def text(self, font, fontsize, text, pos):
@@ -244,23 +245,27 @@ class Game:
         self.client.connect(self.ADDR)
         self.server_funcs.send(socket.gethostname(), self.client)
         self.connected = True
-
+    def move_character(self,keys,player,dt):
+        if keys.get(pygame.K_a):
+            player.move_left(dt)
+        if keys.get(pygame.K_d):
+            player.move_right(dt)
     def update(self, dt):
 
-        if self.keys.get(pygame.K_a):
-            self.player.move_left(dt)
-        if self.keys.get(pygame.K_d):
-            self.player.move_right(dt)
+        self.move_character(self.keys,self.player,dt)
+        self.move_character(self.receive_object[0],self.player_2,dt)
+
         for players in self.player_sprites:
             players.move(dt, self.platforms, self.WINDOW)
-
+            self.BG.blit(self.player.life_image, (40, 60))
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
-        if self.character == 0:
+        if self.character == 0 :
             self.update_mage(dt)
-
+        elif self.character_2 == 0:
+            self.update_mage(dt)
         # Life Bar
-        self.BG.blit(self.player.life_image, (40, 60))
+
         if self.tmp == 1:
             shape_surf = pygame.Surface(pygame.Rect((120, 66, 4 * self.player.life, 40)).size, pygame.SRCALPHA)
             pygame.draw.rect(shape_surf, self.red, shape_surf.get_rect())
@@ -268,9 +273,9 @@ class Game:
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
-        self.send_object = [self.keys,self.key_events,self.mouse_buttons,self.mouse_events,pygame.mouse.get_pos()]
-        self.server_funcs.send(["Play",self.send_object],self.client)
-
+        send_object = [self.keys,self.key_events,self.mouse_buttons,self.mouse_events,pygame.mouse.get_pos()]
+        self.server_funcs.send(["Play",send_object],self.client)
+        self.receive_object = self.server_funcs.receive(self.client)
 
     def update_mage(self, dt):
         if self.player.ulti_time_seconds != 0:
