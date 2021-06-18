@@ -47,6 +47,8 @@ class Game:
 
         # Players
         self.character_class = {0: Mage, 1: Boxer}
+        self.player = None
+        self.player_2 = None
         self.players = ['Mage', 'Boxer', 'Dwarf', 'Soldier', 'Gorgone', 'Tenniswoman']
         self.character = -7
         self.character_selected = -6
@@ -397,5 +399,13 @@ class Game:
     def waiting_receive(self):
         message = self.server_funcs.receive(self.client)
         if message:
-            self.interface = False
-            self.main_menu = True
+            if __name__ == '__main__':
+                if self.interface:
+                    self.interface = False
+                    self.main_menu = True
+                elif self.main_menu:
+                    if self.player:
+                        self.player_2 = self.character_class[message[1]](self.W, self.H, round(self.W / 2),
+                                                                       round(23 / 216 * self.H),
+                                                                       self.attacks_dict[message[1]],
+                                                                       self.platforms)
