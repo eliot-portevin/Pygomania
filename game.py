@@ -10,6 +10,7 @@ class Game:
         self.WINDOW = win
         self.W = W
         self.H = H
+        self.WH = (W+H)/2
         self.BG = BG
 
         self.server_funcs = ServerClass()
@@ -37,12 +38,13 @@ class Game:
         self.key_events = {pygame.KEYDOWN: [], pygame.KEYUP: []}
         self.mouse_events = {pygame.MOUSEBUTTONDOWN: [], pygame.MOUSEBUTTONUP: []}
         self.mouse_buttons = {}
+
         # Platforms
         self.platforms = pygame.sprite.Group()
-        surface = pygame.surface.Surface((200, 50), pygame.SRCALPHA)
+        surface = pygame.surface.Surface((round(self.W*0.139), round(W*0.056)), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 150))
-        self.platform_1 = Platform(surface, pygame.rect.Rect(250, 550, 200, 50))
-        self.platform_2 = Platform(surface, pygame.rect.Rect(1000, 550, 200, 50))
+        self.platform_1 = Platform(surface, pygame.rect.Rect(round(W*0.174), round(H*0.611), round(W*0.139), round(H*0.056)))
+        self.platform_2 = Platform(surface, pygame.rect.Rect(round(W*0.694), round(H*0.611), round(W*0.139), round(H*0.056)))
         surface = pygame.surface.Surface((W, round(H * 0.0602)), pygame.SRCALPHA)
         surface.set_colorkey((0, 0, 0))
         self.ground = Platform(surface, pygame.rect.Rect(0, round(H * 0.942), W, H * 0.0602))
@@ -69,32 +71,32 @@ class Game:
         self.player_sprites = pygame.sprite.Group()
 
         # Menu values
-        self.info_font = pygame.font.SysFont('toonaround', 18)
+        self.info_font = pygame.font.SysFont('toonaround', round(self.WH*0.0154))
         self.menu_characters_dict = {}
         for i in range(6):
             self.menu_characters_dict[self.players[i]] = [self.descriptions[i][:-1], self.stats[i], self.stats_names[i]]
-        self.title_font = pygame.font.SysFont('toonaround', 180)
+        self.title_font = pygame.font.SysFont('toonaround', round(self.WH*0.154))
         self.title_font1 = self.title_font.render('Pygomania', True, (255, 255, 255))
         self.title_font2 = self.title_font.render('Pygomania', True, (0, 0, 0))
 
-        self.prompt_font = pygame.font.SysFont('toonaround', 50)
+        self.prompt_font = pygame.font.SysFont('toonaround', round(self.WH*0.043))
         self.prompt1 = self.prompt_font.render('Press Space to Continue', True, (255, 255, 255))
         self.prompt2 = self.prompt_font.render('Press Space to Continue', True, (0, 0, 0))
         self.start_button = pygame.image.load('media/start_button.png')
-        self.start_button = pygame.transform.scale(self.start_button, (230, 85))
+        self.start_button = pygame.transform.scale(self.start_button, (round(W*0.16), round(H*0.094)))
         self.start_button_hovering = pygame.image.load('media/start_button_hovering.png')
-        self.start_button_hovering = pygame.transform.scale(self.start_button_hovering, (230, 85))
-        self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, self.H - 180, 230, 85)
+        self.start_button_hovering = pygame.transform.scale(self.start_button_hovering, (round(W*0.16), round(H*0.094)))
+        self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, round(self.H*0.8), round(W*0.16), round(H*0.094))
         self.start = False
 
-        self.join_text = self.text('toonaround', 150, "Join", (700, 250))
+        self.join_text = self.text('toonaround', round(self.WH*0.128), "Join", (round(W*0.486), round(H*0.278)))
         self.join_rect = self.join_text[0].get_rect(topleft=self.join_text[1])
-        self.create_text = self.text('toonaround', 150, "Create", (700, 500))
+        self.create_text = self.text('toonaround', round(self.WH*0.128), "Create", (round(W*0.486), round(H*0.556)))
         self.create_rect = self.create_text[0].get_rect(topleft=self.create_text[1])
-        self.waiting = self.text("toonaround", 150, "Waiting for another player...", (round(self.W / 2), 400))
+        self.waiting = self.text("toonaround", round(self.WH*0.128), "Waiting for another player...", (round(W / 2), round(H*0.444)))
 
-        self.title_text = self.text('toonaround', 90, 'Pygomania', (round(self.W / 2), 70))
-        self.rect_surface = pygame.surface.Surface((200, 130), pygame.SRCALPHA)
+        self.title_text = self.text('toonaround', round(self.WH*0.077), 'Pygomania', (round(W / 2), round(H*0.078)))
+        self.rect_surface = pygame.surface.Surface((round(W*0.139), round(H*0.144)), pygame.SRCALPHA)
         self.rect_surface.fill(self.button_colour)
         self.rect_surfaces = []
         for i in range(6):
@@ -103,17 +105,19 @@ class Game:
         for x in range(2):
             for y in range(3):
                 i = 3 * x + y
-                self.name_surfaces.append(self.text('toonaround', 30, self.players[i],
-                                                    (940 * x + 250, round(self.H / 5 * (y + 1.5)) + 130 + 5)))
+                self.name_surfaces.append(self.text('toonaround', round(self.WH*0.0256), self.players[i],
+                                                    (round(W*0.653) * x + round(W*0.174), round(H*0.2 * y+H*0.45))))
         self.menu_rects = []
         for x in range(2):
             for y in range(3):
                 self.menu_rects.append(
-                    pygame.rect.Rect(940 * x + 150, round(self.H / 5 * (y + 1.5)), self.rect_surface.get_width(),
+                    pygame.rect.Rect(round(W*0.653) * x + round(W*0.104), round(self.H*0.2 * y + H*0.3), self.rect_surface.get_width(),
                                      self.rect_surface.get_height()))
-        self.info_box = pygame.Surface((450, 350), pygame.SRCALPHA)
+        for rect in self.menu_rects:
+            print(rect.y)
+        self.info_box = pygame.Surface((round(W*0.313), round(H*0.389)), pygame.SRCALPHA)
         self.info_box.fill(self.black_transparent)
-        self.x_start = self.W / 2 - self.info_box.get_width() / 2 + 10
+        self.x_start = round(W*0.344) + round(self.W/144)
         self.time = 0
 
         self.prev_time = time.time()

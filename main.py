@@ -5,7 +5,7 @@ import time
 from game import Game
 
 
-win = pygame.display.set_mode((1000,700))
+win = pygame.display.set_mode((0,0))
 W, H = win.get_width(), win.get_height()
 
 pygame.display.set_caption('Pygomania')
