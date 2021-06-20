@@ -218,9 +218,11 @@ class Game:
                         self.character = self.menu_rects.index(rect)
                 if self.start and self.character >= 0:
                     x = round(4 * self.W / 5)
-                    if self.player_2:
+                    if self.player_2 is not None:
                         self.main_menu = False
                         x = round(self.W/5)
+                    else:
+                        self.waiting_for_other = True
                     self.player = self.character_class[self.character](self.W, self.H, x, round(23 / 216 * self.H),
                                                                       self.attacks_dict[self.character], self.platforms)
                     self.server_funcs.send(["Play",self.character],self.client)
@@ -269,9 +271,9 @@ class Game:
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
         if self.character == 0:
-            self.update_mage(dt,self.player)
+            self.update_mage(dt,self.player,pygame.mouse.get_pos()[0])
         if self.character_2 == 0:
-            self.update_mage(dt,self.player_2)
+            self.update_mage(dt,self.player_2,self.receive_object[4][0])
         # Life Bar
 
         if self.tmp == 1:
@@ -281,12 +283,12 @@ class Game:
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
-    def update_mage(self, dt, player):
+    def update_mage(self, dt, player,mouse_pos):
         if player.ulti_time_seconds != 0:
             player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
         player.fireballs.draw(self.WINDOW)
         player.laser_beam.draw(self.WINDOW)
-        player.ulti_prevision(self.WINDOW)
+        player.ulti_prevision(self.WINDOW,mouse_pos)
 
         for fireball in player.fireballs:
             fireball.move(dt)
@@ -449,7 +451,6 @@ class Game:
                 pygame.quit()
             elif e.type == pygame.MOUSEBUTTONUP:
                 if e.button == 1:
-                    # print(e.pos)
                     if not self.join and not self.create:
                         if self.join_rect.collidepoint(e.pos):
                             self.join = True

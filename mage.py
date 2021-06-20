@@ -129,9 +129,9 @@ class Mage(Player):
             x, bottom = self.rect.x, self.rect.bottom
             self.rect = self.image.get_rect(x=x, bottom=bottom)
             self.time = pygame.time.get_ticks()
-    def ulti_prevision(self, surf):
+    def ulti_prevision(self, surf,pos):
         if self.planning_ulti:
-            x = pygame.mouse.get_pos()[0]
+            x = pos
             self.ulti_pos = x
             if self.rect.x - x > 0 and self.moving_right:
                 self.moving_right = False
