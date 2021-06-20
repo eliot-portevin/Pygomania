@@ -1,6 +1,5 @@
 import pygame
 
-
 from spritesheet import Spritesheet
 
 
@@ -45,7 +44,6 @@ class Player(pygame.sprite.Sprite):
         self.time = pygame.time.get_ticks()
         self.platforms = platforms
 
-
         self.ground = round(self.H * 0.942)
         self.fall_platform = False
         self.image = self.idle_right_sprites[0][0]
@@ -58,24 +56,24 @@ class Player(pygame.sprite.Sprite):
         self.life_image = pygame.transform.scale(self.life_image, (57, 57))
         self.tmp = 500
 
-    def create_animations(self, sheet_name,agrandissement=192/19,w_normal=True):
+    def create_animations(self, sheet_name, agrandissement=192 / 19, w_normal=True):
         setattr(self, sheet_name + "_sheet", Spritesheet(self.dir + sheet_name + "-sheet.png"))
         setattr(self, sheet_name + "_right_sprites", [])
         setattr(self, sheet_name + "_left_sprites", [])
         for i in range(getattr(self, sheet_name + "_sheet").get_nb_sprites()):
             sprite, duration = getattr(self, sheet_name + "_sheet").parse_sprites(f"{sheet_name}{i}.png")
-            w,h = sprite.get_width(),sprite.get_height()
+            w, h = sprite.get_width(), sprite.get_height()
             if w_normal:
                 size = round(sprite.get_width() * agrandissement)
-                size2 = round(h*size/w)
+                size2 = round(h * size / w)
             else:
-                size2 = round(sprite.get_height()*agrandissement)
-                size = round(w*size2/h)
-            sprite = pygame.transform.scale(sprite,(size,size2))
+                size2 = round(sprite.get_height() * agrandissement)
+                size = round(w * size2 / h)
+            sprite = pygame.transform.scale(sprite, (size, size2))
             getattr(self, sheet_name + "_right_sprites").append([sprite, duration])
             getattr(self, sheet_name + "_left_sprites").append([pygame.transform.flip(sprite, True, False), duration])
 
-    def move(self, dt, platforms,window):
+    def move(self, dt, platforms, window):
         self.gravity(dt)
         copy = platforms.copy()
         if self.fall_platform:
@@ -92,12 +90,11 @@ class Player(pygame.sprite.Sprite):
 
     def timer(self, pos, font, surface, color, variable, temp_variable):
         if pygame.time.get_ticks() - getattr(self, temp_variable) > 1000:
-            setattr(self, variable, getattr(self, variable)-1)
-            setattr(self, temp_variable,pygame.time.get_ticks())
+            setattr(self, variable, getattr(self, variable) - 1)
+            setattr(self, temp_variable, pygame.time.get_ticks())
         text = font.render(str(getattr(self, variable)), True, color)
-        surface.blit(text, pos)
-
-
+        rect = text.get_rect(topleft=pos)
+        surface.blit(text, (rect.centerx, pos[1]))
 
     def move_right(self, dt):
         if self.rect.x < self.W - self.image.get_width():

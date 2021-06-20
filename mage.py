@@ -3,9 +3,10 @@ from player import Player
 from fireball import Fireball
 from laser_beam import Laser_Beam
 
+
 class Mage(Player):
-    def __init__(self,W,H,x,y,dir,platform):
-        super().__init__(W,H,x,y,"media/Mage_animation/",platform)
+    def __init__(self, W, H, x, y, dir, platform):
+        super().__init__(W, H, x, y, "media/Mage_animation/", platform)
 
         self.fireballs = pygame.sprite.Group()
         self.laser_beam = pygame.sprite.GroupSingle()
@@ -76,8 +77,8 @@ class Mage(Player):
                 if self.key == self.ultimate_sheet.get_nb_sprites() - 1:
                     self.ulti = False
                     self.change_animation()
-                elif self.key == self.ultimate_sheet.get_nb_sprites()-2:
-                    laser = Laser_Beam(self.W,self.H,self.ulti_pos)
+                elif self.key == self.ultimate_sheet.get_nb_sprites() - 2:
+                    laser = Laser_Beam(self.W, self.H, self.ulti_pos)
                     self.laser_beam.add(laser)
                     self.key += 1
                     self.ulti_prev_surf_alpha = 5
@@ -129,7 +130,8 @@ class Mage(Player):
             x, bottom = self.rect.x, self.rect.bottom
             self.rect = self.image.get_rect(x=x, bottom=bottom)
             self.time = pygame.time.get_ticks()
-    def ulti_prevision(self, surf,pos):
+
+    def ulti_prevision(self, surf, pos, blit):
         if self.planning_ulti:
             x = pos
             self.ulti_pos = x
@@ -139,9 +141,10 @@ class Mage(Player):
             elif self.rect.x - x < 0 and not self.moving_right:
                 self.moving_right = True
                 self.change_animation()
-            w = 150
-            surface = pygame.surface.Surface((150, self.ground),pygame.SRCALPHA)
-            surface.fill((0,0,0,100))
-            surf.blit(surface,(x-w/2,0))
+            w = round(self.W * 0.15)
+            if blit:
+                surface = pygame.surface.Surface((150, self.ground), pygame.SRCALPHA)
+                surface.fill((0, 0, 0, 100))
+                surf.blit(surface, (x - w / 2, 0))
         if self.ulti:
-            surf.blit(self.ulti_prev_surf, (self.ulti_pos - 75, self.ground))
+            surf.blit(self.ulti_prev_surf, (self.ulti_pos - round(self.W * 0.075), self.ground))

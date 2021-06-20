@@ -1,9 +1,9 @@
 import pygame
+
 pygame.init()
 
 import time
 from game import Game
-
 
 win = pygame.display.set_mode((0,0))
 W, H = win.get_width(), win.get_height()
@@ -21,7 +21,7 @@ clock = pygame.time.Clock()
 def update_fps():
     try:
         fps = str(int(clock.get_fps()))
-        fps_text = game.prompt_font.render(fps + "  FPS", 1, (130,100,70))
+        fps_text = game.prompt_font.render(fps + "  FPS", 1, (130, 100, 70))
         return fps_text
     except:
         print("Error")
@@ -33,7 +33,7 @@ def main():
     while game.playing:
 
         clock.tick(fps)
-        dt = (time.time() - game.prev_time)*50
+        dt = (time.time() - game.prev_time) * 50
         game.prev_time = time.time()
         win.blit(BG, (0, 0))
         if not game.connected:
@@ -51,7 +51,7 @@ def main():
             game.update(dt)
             game.events(dt)
         try:
-            win.blit(update_fps(),(0,200))
+            win.blit(update_fps(), (0, 200))
         except:
             pass
         pygame.display.flip()

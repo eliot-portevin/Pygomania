@@ -1,6 +1,10 @@
-import pygame, time, socket, threading
-from mage import Mage
+import pygame
+import socket
+import threading
+import time
+
 from boxer import Boxer
+from mage import Mage
 from platforms import Platform
 from server_functions import ServerClass
 
@@ -10,7 +14,7 @@ class Game:
         self.WINDOW = win
         self.W = W
         self.H = H
-        self.WH = (W+H)/2
+        self.WH = (W + H) / 2
         self.BG = BG
 
         self.server_funcs = ServerClass()
@@ -41,10 +45,12 @@ class Game:
 
         # Platforms
         self.platforms = pygame.sprite.Group()
-        surface = pygame.surface.Surface((round(self.W*0.139), round(W*0.056)), pygame.SRCALPHA)
+        surface = pygame.surface.Surface((round(self.W * 0.139), round(W * 0.056)), pygame.SRCALPHA)
         surface.fill((0, 0, 0, 150))
-        self.platform_1 = Platform(surface, pygame.rect.Rect(round(W*0.174), round(H*0.611), round(W*0.139), round(H*0.056)))
-        self.platform_2 = Platform(surface, pygame.rect.Rect(round(W*0.694), round(H*0.611), round(W*0.139), round(H*0.056)))
+        self.platform_1 = Platform(surface, pygame.rect.Rect(round(W * 0.174), round(H * 0.611), round(W * 0.139),
+                                                             round(H * 0.056)))
+        self.platform_2 = Platform(surface, pygame.rect.Rect(round(W * 0.694), round(H * 0.611), round(W * 0.139),
+                                                             round(H * 0.056)))
         surface = pygame.surface.Surface((W, round(H * 0.0602)), pygame.SRCALPHA)
         surface.set_colorkey((0, 0, 0))
         self.ground = Platform(surface, pygame.rect.Rect(0, round(H * 0.942), W, H * 0.0602))
@@ -71,32 +77,36 @@ class Game:
         self.player_sprites = pygame.sprite.Group()
 
         # Menu values
-        self.info_font = pygame.font.SysFont('toonaround', round(self.WH*0.0154))
+        self.info_font = pygame.font.SysFont('toonaround', round(self.WH * 0.0154))
         self.menu_characters_dict = {}
         for i in range(6):
             self.menu_characters_dict[self.players[i]] = [self.descriptions[i][:-1], self.stats[i], self.stats_names[i]]
-        self.title_font = pygame.font.SysFont('toonaround', round(self.WH*0.154))
+        self.title_font = pygame.font.SysFont('toonaround', round(self.WH * 0.154))
         self.title_font1 = self.title_font.render('Pygomania', True, (255, 255, 255))
         self.title_font2 = self.title_font.render('Pygomania', True, (0, 0, 0))
 
-        self.prompt_font = pygame.font.SysFont('toonaround', round(self.WH*0.043))
+        self.prompt_font = pygame.font.SysFont('toonaround', round(self.WH * 0.043))
         self.prompt1 = self.prompt_font.render('Press Space to Continue', True, (255, 255, 255))
         self.prompt2 = self.prompt_font.render('Press Space to Continue', True, (0, 0, 0))
         self.start_button = pygame.image.load('media/start_button.png')
-        self.start_button = pygame.transform.scale(self.start_button, (round(W*0.16), round(H*0.094)))
+        self.start_button = pygame.transform.scale(self.start_button, (round(W * 0.16), round(H * 0.094)))
         self.start_button_hovering = pygame.image.load('media/start_button_hovering.png')
-        self.start_button_hovering = pygame.transform.scale(self.start_button_hovering, (round(W*0.16), round(H*0.094)))
-        self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, round(self.H*0.8), round(W*0.16), round(H*0.094))
+        self.start_button_hovering = pygame.transform.scale(self.start_button_hovering,
+                                                            (round(W * 0.16), round(H * 0.094)))
+        self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, round(self.H * 0.8),
+                                      round(W * 0.16), round(H * 0.094))
         self.start = False
 
-        self.join_text = self.text('toonaround', round(self.WH*0.128), "Join", (round(W*0.486), round(H*0.278)))
+        self.join_text = self.text('toonaround', round(self.WH * 0.128), "Join", (round(W * 0.486), round(H * 0.278)))
         self.join_rect = self.join_text[0].get_rect(topleft=self.join_text[1])
-        self.create_text = self.text('toonaround', round(self.WH*0.128), "Create", (round(W*0.486), round(H*0.556)))
+        self.create_text = self.text('toonaround', round(self.WH * 0.128), "Create",
+                                     (round(W * 0.486), round(H * 0.556)))
         self.create_rect = self.create_text[0].get_rect(topleft=self.create_text[1])
-        self.waiting = self.text("toonaround", round(self.WH*0.128), "Waiting for another player...", (round(W / 2), round(H*0.444)))
+        self.waiting = self.text("toonaround", round(self.WH * 0.128), "Waiting for another player...",
+                                 (round(W / 2), round(H * 0.444)))
 
-        self.title_text = self.text('toonaround', round(self.WH*0.077), 'Pygomania', (round(W / 2), round(H*0.078)))
-        self.rect_surface = pygame.surface.Surface((round(W*0.139), round(H*0.144)), pygame.SRCALPHA)
+        self.title_text = self.text('toonaround', round(self.WH * 0.077), 'Pygomania', (round(W / 2), round(H * 0.078)))
+        self.rect_surface = pygame.surface.Surface((round(W * 0.139), round(H * 0.144)), pygame.SRCALPHA)
         self.rect_surface.fill(self.button_colour)
         self.rect_surfaces = []
         for i in range(6):
@@ -105,19 +115,19 @@ class Game:
         for x in range(2):
             for y in range(3):
                 i = 3 * x + y
-                self.name_surfaces.append(self.text('toonaround', round(self.WH*0.0256), self.players[i],
-                                                    (round(W*0.653) * x + round(W*0.174), round(H*0.2 * y+H*0.45))))
+                self.name_surfaces.append(self.text('toonaround', round(self.WH * 0.0256), self.players[i],
+                                                    (round(W * 0.653) * x + round(W * 0.174),
+                                                     round(H * 0.2 * y + H * 0.45))))
         self.menu_rects = []
         for x in range(2):
             for y in range(3):
                 self.menu_rects.append(
-                    pygame.rect.Rect(round(W*0.653) * x + round(W*0.104), round(self.H*0.2 * y + H*0.3), self.rect_surface.get_width(),
+                    pygame.rect.Rect(round(W * 0.653) * x + round(W * 0.104), round(self.H * 0.2 * y + H * 0.3),
+                                     self.rect_surface.get_width(),
                                      self.rect_surface.get_height()))
-        for rect in self.menu_rects:
-            print(rect.y)
-        self.info_box = pygame.Surface((round(W*0.313), round(H*0.389)), pygame.SRCALPHA)
+        self.info_box = pygame.Surface((round(W * 0.313), round(H * 0.389)), pygame.SRCALPHA)
         self.info_box.fill(self.black_transparent)
-        self.x_start = round(W*0.344) + round(self.W/144)
+        self.x_start = round(W * 0.344) + round(self.W / 144)
         self.time = 0
 
         self.prev_time = time.time()
@@ -191,9 +201,9 @@ class Game:
 
             # Start button
             if not self.start:
-                self.WINDOW.blit(self.start_button, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
+                self.WINDOW.blit(self.start_button, self.start_rect)
             else:
-                self.WINDOW.blit(self.start_button_hovering, (self.W / 2 - self.start_button.get_width() / 2, self.H - 180))
+                self.WINDOW.blit(self.start_button_hovering, self.start_rect)
             if self.character >= 0:
                 pygame.draw.rect(self.WINDOW, (217, 215, 126), self.menu_rects[self.character], 10)
 
@@ -220,12 +230,13 @@ class Game:
                     x = round(4 * self.W / 5)
                     if self.player_2 is not None:
                         self.main_menu = False
-                        x = round(self.W/5)
+                        x = round(self.W / 5)
                     else:
                         self.waiting_for_other = True
                     self.player = self.character_class[self.character](self.W, self.H, x, round(23 / 216 * self.H),
-                                                                      self.attacks_dict[self.character], self.platforms)
-                    self.server_funcs.send(["Play",self.character],self.client)
+                                                                       self.attacks_dict[self.character],
+                                                                       self.platforms)
+                    self.server_funcs.send(["Play", self.character], self.client)
 
                     self.player_sprites.add(self.player)
 
@@ -251,7 +262,7 @@ class Game:
         self.server_funcs.send(socket.gethostname(), self.client)
         self.connected = True
 
-    def move_character(self,keys,player,dt):
+    def move_character(self, keys, player, dt):
         if keys.get(pygame.K_a):
             player.move_left(dt)
         if keys.get(pygame.K_d):
@@ -262,8 +273,8 @@ class Game:
         self.server_funcs.send(["Play", send_object], self.client)
         self.receive_object = self.server_funcs.receive(self.client)
 
-        self.move_character(self.keys,self.player,dt)
-        self.move_character(self.receive_object[0],self.player_2,dt)
+        self.move_character(self.keys, self.player, dt)
+        self.move_character(self.receive_object[0], self.player_2, dt)
 
         for players in self.player_sprites:
             players.move(dt, self.platforms, self.WINDOW)
@@ -271,9 +282,9 @@ class Game:
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
         if self.character == 0:
-            self.update_mage(dt,self.player,pygame.mouse.get_pos()[0])
+            self.update_mage(dt, self.player, pygame.mouse.get_pos()[0], True)
         if self.character_2 == 0:
-            self.update_mage(dt,self.player_2,self.receive_object[4][0])
+            self.update_mage(dt, self.player_2, self.receive_object[4][0], False)
         # Life Bar
 
         if self.tmp == 1:
@@ -283,13 +294,13 @@ class Game:
             self.tmp += 1
         pygame.draw.rect(self.BG, self.white, (120, 66, 400, 40), 4)
 
-    def update_mage(self, dt, player,mouse_pos):
-        if player.ulti_time_seconds != 0:
-            player.timer((700, 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds', 'ulti_temp_time')
+    def update_mage(self, dt, player, mouse_pos, blit):
+        if player.ulti_time_seconds != 0 and blit:
+            player.timer((round(self.W / 2), 0), self.prompt_font, self.WINDOW, (0, 0, 0), 'ulti_time_seconds',
+                         'ulti_temp_time')
         player.fireballs.draw(self.WINDOW)
         player.laser_beam.draw(self.WINDOW)
-        player.ulti_prevision(self.WINDOW,mouse_pos)
-
+        player.ulti_prevision(self.WINDOW, mouse_pos, blit)
         for fireball in player.fireballs:
             fireball.move(dt)
         for laser in player.laser_beam:
@@ -320,8 +331,10 @@ class Game:
                     self.player.change_animation()
                 elif event.key == pygame.K_s:
                     self.player.fall_down()
-                elif event.key == pygame.K_e and not self.player.planning_ulti and self.player.ulti_time_seconds == 0:
-                    self.player.planning_ulti = True
+                elif event.key == pygame.K_e:
+                    if self.character == 0:
+                        if not self.player.planning_ulti and self.player.ulti_time_seconds == 0:
+                            self.player.planning_ulti = True
                 elif event.key == pygame.K_d:
                     if self.keys.get(pygame.K_a):
                         self.player.moving = False
@@ -376,8 +389,10 @@ class Game:
                 self.player_2.change_animation()
             elif keydown == pygame.K_s:
                 self.player_2.fall_down()
-            elif keydown == pygame.K_e and not self.player_2.planning_ulti and self.player_2.ulti_time_seconds == 0:
-                self.player_2.planning_ulti = True
+            elif keydown == pygame.K_e:
+                if self.character_2 == 0:
+                    if not self.player_2.planning_ulti and self.player_2.ulti_time_seconds == 0:
+                        self.player_2.planning_ulti = True
             elif keydown == pygame.K_d:
                 if self.receive_object[0].get(pygame.K_a):
                     self.player_2.moving = False
@@ -386,10 +401,12 @@ class Game:
                     self.player_2.moving = True
                 self.player_2.change_animation()
         for keyup in self.receive_object[1][pygame.KEYUP]:
-            if keyup == pygame.K_e and self.player_2.planning_ulti and not self.player_2.ulti and self.player_2.ulti_time_seconds == 0:
-                self.player_2.planning_ulti = False
-                self.player_2.ulti = True
-                self.player_2.change_animation()
+            if keyup == pygame.K_e:
+                if self.character_2 == 0:
+                    if self.player_2.planning_ulti and not self.player_2.ulti and self.player_2.ulti_time_seconds == 0:
+                        self.player_2.planning_ulti = False
+                        self.player_2.ulti = True
+                        self.player_2.change_animation()
             if keyup in {pygame.K_a, pygame.K_d}:
                 if not (self.receive_object[0].get(pygame.K_a) or self.receive_object[0].get(pygame.K_d)):
                     self.player_2.moving = False
@@ -401,8 +418,10 @@ class Game:
                     self.player_2.moving = True
                 self.player_2.change_animation()
         for mouseup in self.receive_object[3][pygame.MOUSEBUTTONUP]:
-            if mouseup == 3 and self.player_2.planning_ulti:
-                self.player_2.planning_ulti = False
+            if mouseup == 3:
+                if self.character_2 == 0:
+                    if self.player_2.planning_ulti:
+                        self.player_2.planning_ulti = False
 
     def menu_update(self):
         self.WINDOW.blit(self.title_font2,
@@ -473,6 +492,9 @@ class Game:
                                 thread = threading.Thread(target=self.waiting_receive)
                                 thread.start()
                                 break
+            elif e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_ESCAPE:
+                    self.join = False
 
     def waiting_receive(self):
         message = self.server_funcs.receive(self.client)
@@ -486,8 +508,9 @@ class Game:
                 x = round(4 * self.W / 5)
                 if self.player:
                     x = round(self.W / 5)
-                    self.main_menu = False
                 self.character_2 = message
                 self.player_2 = self.character_class[message](self.W, self.H, x, round(23 / 216 * self.H),
-                                                                 self.attacks_dict[message], self.platforms)
+                                                              self.attacks_dict[message], self.platforms)
                 self.player_sprites.add(self.player_2)
+                if self.player:
+                    self.main_menu = False
