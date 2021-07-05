@@ -138,9 +138,9 @@ class Game:
         # Server values
         self.connected = False
         SERVER = socket.gethostbyname(socket.gethostname())
-        # self.SERVER = '92.107.201.191'
+        SERVER = '188.62.246.195'
         self.HEADER = 64
-        PORT = 10632
+        PORT = 5050
         self.ADDR = (SERVER, PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MSG = '!DISCONNECT'
@@ -301,8 +301,13 @@ class Game:
         player.fireballs.draw(self.WINDOW)
         player.laser_beam.draw(self.WINDOW)
         player.ulti_prevision(self.WINDOW, mouse_pos, blit)
+        other_player = self.player
+        if blit:
+            other_player = self.player_2
         for fireball in player.fireballs:
             fireball.move(dt)
+            if pygame.sprite.collide_mask(fireball,other_player):
+                other_player.damage(fireball.damage)
         for laser in player.laser_beam:
             laser.check()
 

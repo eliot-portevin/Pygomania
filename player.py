@@ -52,6 +52,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx, self.rect.bottom = x, y + 40
         self.life = 100
+        self.life_max = self.life
         self.life_image = pygame.image.load('media/life.png')
         self.life_image = pygame.transform.scale(self.life_image, (57, 57))
         self.tmp = 500
@@ -148,3 +149,10 @@ class Player(pygame.sprite.Sprite):
             if pygame.sprite.collide_mask(self, sprite):
                 hits.append(sprite)
         return hits
+    def damage(self,amount):
+        if self.life < amount:
+            # Il est mort
+            self.life = 0
+            pass
+        else:
+            self.life -= amount

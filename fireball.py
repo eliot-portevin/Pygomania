@@ -5,6 +5,7 @@ class Fireball(pygame.sprite.Sprite):
     def __init__(self, pos, dir):
         super().__init__()
         self.velocity = 8
+        self.damage = 15
         self.image = pygame.transform.scale(pygame.image.load('media/Mage_animation/fireball.png'), (64, 64))
         # Position in x and y and direction in x (-1 for left and 1 for right)
         self.position = pos
