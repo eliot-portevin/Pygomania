@@ -74,7 +74,7 @@ class Player(pygame.sprite.Sprite):
             getattr(self, sheet_name + "_right_sprites").append([sprite, duration])
             getattr(self, sheet_name + "_left_sprites").append([pygame.transform.flip(sprite, True, False), duration])
 
-    def move(self, dt, platforms, window):
+    def move(self, dt, platforms):
         self.gravity(dt)
         copy = platforms.copy()
         if self.fall_platform:

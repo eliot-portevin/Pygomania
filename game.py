@@ -145,7 +145,6 @@ class Game:
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MSG = '!DISCONNECT'
         self.receive_object = [{},{},{},{},(0,0)]
-        self.time_stamp = pygame.time.get_ticks()
         # toutes les touches vraies, les touches event, les boutons de la souris,
         # les boutons event, la position de la souris
 
@@ -275,7 +274,7 @@ class Game:
         self.move_character(self.receive_object[0], self.player_2, dt)
 
         for players in self.player_sprites:
-            players.move(dt, self.platforms, self.WINDOW)
+            players.move(dt, self.platforms)
         self.BG.blit(self.player.life_image, (40, 60))
         self.player_sprites.draw(self.WINDOW)
         self.platforms.draw(self.WINDOW)
@@ -522,20 +521,22 @@ class Game:
                     threading.Thread(target=self.receive_online).start()
 
     def send_online(self):
-        self.time_stamp = pygame.time.get_ticks()
         while not self.player_2 and not self.player:
             time.sleep(0.5)
         while self.playing:
-            time.sleep(0.1)
+            time.sleep(0.05)
             send_object = [self.keys, self.key_events, self.mouse_buttons, self.mouse_events,
                            pygame.mouse.get_pos()]
             self.server_funcs.send(["Play", send_object], self.client)
-            self.time_stamp = pygame.time.get_ticks()
+            self.key_events = {pygame.KEYDOWN: [], pygame.KEYUP: []}
+            self.mouse_events = {pygame.MOUSEBUTTONDOWN: [], pygame.MOUSEBUTTONUP: []}
+
     def receive_online(self):
         while not self.player_2 and not self.player:
             time.sleep(0.5)
         while self.playing:
             self.receive_object = self.server_funcs.receive(self.client)
             self.events_2()
+
 
 
