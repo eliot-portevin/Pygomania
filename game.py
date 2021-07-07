@@ -526,12 +526,11 @@ class Game:
         while not self.player_2 and not self.player:
             time.sleep(0.5)
         while self.playing:
-            if pygame.time.get_ticks() - self.time_stamp > 100:
-                print("send")
-                send_object = [self.keys, self.key_events, self.mouse_buttons, self.mouse_events,
-                               pygame.mouse.get_pos()]
-                self.server_funcs.send(["Play", send_object], self.client)
-                self.time_stamp = pygame.time.get_ticks()
+            time.sleep(0.1)
+            send_object = [self.keys, self.key_events, self.mouse_buttons, self.mouse_events,
+                           pygame.mouse.get_pos()]
+            self.server_funcs.send(["Play", send_object], self.client)
+            self.time_stamp = pygame.time.get_ticks()
     def receive_online(self):
         while not self.player_2 and not self.player:
             time.sleep(0.5)
