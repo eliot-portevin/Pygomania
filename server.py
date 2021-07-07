@@ -4,8 +4,8 @@ import pickle
 
 HEADER = 16
 PORT = 10632
-# SERVER = '0.0.0.0'
-SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = '0.0.0.0'
+#SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 

@@ -49,7 +49,7 @@ def main():
             game.main_menu_events()
         else:
             game.update(dt)
-            game.events(dt)
+            game.events()
         try:
             win.blit(update_fps(), (0, 200))
         except:

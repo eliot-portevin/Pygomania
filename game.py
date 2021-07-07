@@ -138,13 +138,14 @@ class Game:
         # Server values
         self.connected = False
         SERVER = socket.gethostbyname(socket.gethostname())
-        SERVER = '188.62.246.195'
-        self.HEADER = 64
-        PORT = 5050
+        # SERVER = '192.168.1.126'
+        self.HEADER = 16
+        PORT = 10632
         self.ADDR = (SERVER, PORT)
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MSG = '!DISCONNECT'
-        self.receive_object = []
+        self.receive_object = [{},{},{},{},(0,0)]
+        self.time_stamp = pygame.time.get_ticks()
         # toutes les touches vraies, les touches event, les boutons de la souris,
         # les boutons event, la position de la souris
 
@@ -228,16 +229,17 @@ class Game:
                         self.character = self.menu_rects.index(rect)
                 if self.start and self.character >= 0:
                     x = round(4 * self.W / 5)
+                    self.server_funcs.send(["Play", self.character], self.client)
                     if self.player_2 is not None:
                         self.main_menu = False
+                        threading.Thread(target=self.send_online).start()
+                        threading.Thread(target=self.receive_online).start()
                         x = round(self.W / 5)
                     else:
                         self.waiting_for_other = True
                     self.player = self.character_class[self.character](self.W, self.H, x, round(23 / 216 * self.H),
                                                                        self.attacks_dict[self.character],
                                                                        self.platforms)
-                    self.server_funcs.send(["Play", self.character], self.client)
-
                     self.player_sprites.add(self.player)
 
             elif e.type == pygame.MOUSEMOTION:
@@ -269,10 +271,6 @@ class Game:
             player.move_right(dt)
 
     def update(self, dt):
-        send_object = [self.keys, self.key_events, self.mouse_buttons, self.mouse_events, pygame.mouse.get_pos()]
-        self.server_funcs.send(["Play", send_object], self.client)
-        self.receive_object = self.server_funcs.receive(self.client)
-
         self.move_character(self.keys, self.player, dt)
         self.move_character(self.receive_object[0], self.player_2, dt)
 
@@ -311,15 +309,14 @@ class Game:
         for laser in player.laser_beam:
             laser.check()
 
-    def events(self, dt):
-        self.key_events = {pygame.KEYDOWN: [], pygame.KEYUP: []}
-        self.mouse_events = {pygame.MOUSEBUTTONDOWN: [], pygame.MOUSEBUTTONUP: []}
+    def events(self,):
+
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 self.key_events[pygame.KEYDOWN].append(event.key)
                 self.keys[event.key] = True
                 if event.key == pygame.K_w and not self.player.double_jumping:
-                    self.player.jump(dt)
+                    self.player.jump()
                 elif event.key == pygame.K_q:
                     if self.character == 0:
                         if not self.player.spelling and not self.player.ulti:
@@ -375,9 +372,10 @@ class Game:
             elif event.type == pygame.QUIT:
                 self.playing = False
                 pygame.quit()
+    def events_2(self):
         for keydown in self.receive_object[1][pygame.KEYDOWN]:
             if keydown == pygame.K_w and not self.player_2.double_jumping:
-                self.player_2.jump(dt)
+                self.player_2.jump()
             elif keydown == pygame.K_q:
                 if self.character_2 == 0:
                     if not self.player_2.spelling and not self.player_2.ulti:
@@ -514,8 +512,31 @@ class Game:
                 if self.player:
                     x = round(self.W / 5)
                 self.character_2 = message
+                print(message)
                 self.player_2 = self.character_class[message](self.W, self.H, x, round(23 / 216 * self.H),
                                                               self.attacks_dict[message], self.platforms)
                 self.player_sprites.add(self.player_2)
-                if self.player:
+                if self.player is not None:
                     self.main_menu = False
+                    threading.Thread(target=self.send_online).start()
+                    threading.Thread(target=self.receive_online).start()
+
+    def send_online(self):
+        self.time_stamp = pygame.time.get_ticks()
+        while not self.player_2 and not self.player:
+            time.sleep(0.5)
+        while self.playing:
+            if pygame.time.get_ticks() - self.time_stamp > 100:
+                print("send")
+                send_object = [self.keys, self.key_events, self.mouse_buttons, self.mouse_events,
+                               pygame.mouse.get_pos()]
+                self.server_funcs.send(["Play", send_object], self.client)
+                self.time_stamp = pygame.time.get_ticks()
+    def receive_online(self):
+        while not self.player_2 and not self.player:
+            time.sleep(0.5)
+        while self.playing:
+            self.receive_object = self.server_funcs.receive(self.client)
+            self.events_2()
+
+

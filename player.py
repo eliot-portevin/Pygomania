@@ -105,7 +105,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.x > 0:
             self.rect.x -= round(5 * dt)
 
-    def jump(self, dt):
+    def jump(self):
         if not self.jump_animation and not self.jumping:
             self.jump_animation = True
             self.spelling = False
@@ -117,7 +117,7 @@ class Player(pygame.sprite.Sprite):
             elif not self.double_jumping:
                 self.double_jumping = True
             self.velocity = -15
-            self.rect.y += self.velocity * dt
+            self.rect.y += self.velocity * 0.5
 
     def fall_down(self):
         if self.jumping or self.double_jumping:
