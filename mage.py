@@ -65,7 +65,7 @@ class Mage(Player):
         if pygame.time.get_ticks() - self.time >= self.tmp:
             if self.jump_animation:
                 if self.key == self.jump_sheet.get_nb_sprites() - 1:
-                    self.jump(dt)
+                    self.jump()
                 elif self.moving_right:
                     self.key += 1
                     self.image = self.jump_right_sprites[self.key][0]

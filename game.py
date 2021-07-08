@@ -93,7 +93,7 @@ class Game:
         self.start_button_hovering = pygame.image.load('media/start_button_hovering.png')
         self.start_button_hovering = pygame.transform.scale(self.start_button_hovering,
                                                             (round(W * 0.16), round(H * 0.094)))
-        self.start_rect = pygame.Rect(self.W / 2 - self.start_button.get_width() / 2, round(self.H * 0.8),
+        self.start_rect = pygame.Rect(round(W * 0.42), round(H * 0.8),
                                       round(W * 0.16), round(H * 0.094))
         self.start = False
 
@@ -208,7 +208,7 @@ class Game:
                 pygame.draw.rect(self.WINDOW, (217, 215, 126), self.menu_rects[self.character], 10)
 
             # Information box
-            self.WINDOW.blit(self.info_box, (self.W / 2 - self.info_box.get_width() / 2, self.H / 3))
+            self.WINDOW.blit(self.info_box, (round(self.W * 0.187) / 2, self.H / 3))
             if self.character_selected >= 0:
                 self.box_text(self.WINDOW, self.info_font, self.x_start, self.x_start + 430, self.H / 1.7 - 5,
                               self.descriptions[self.character_selected][:-1], self.white)
@@ -371,6 +371,7 @@ class Game:
             elif event.type == pygame.QUIT:
                 self.playing = False
                 pygame.quit()
+
     def events_2(self):
         for keydown in self.receive_object[1][pygame.KEYDOWN]:
             if keydown == pygame.K_w and not self.player_2.double_jumping:
