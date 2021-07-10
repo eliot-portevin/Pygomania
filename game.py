@@ -492,9 +492,8 @@ class Game:
             if pygame.time.get_ticks() - self.external_time_stamp >= self.receive_object[1][pygame.MOUSEBUTTONUP][1][0]:
                 button = self.receive_object[1][pygame.MOUSEBUTTONUP][0][0]
                 self.mouse_buttons_2[button] = False
-                del self.mouse_events[pygame.MOUSEBUTTONDOWN][1][0]
-                del self.mouse_events[pygame.MOUSEBUTTONDOWN][0][0]
-            else:
+                del self.receive_object[1][pygame.MOUSEBUTTONUP][1][0]
+                del self.receive_object[1][pygame.MOUSEBUTTONUP][0][0]
                 break
 
 
@@ -599,6 +598,7 @@ class Game:
             time.sleep(0.5)
         while self.playing:
             time.sleep(0.05)
+            print(self.key_events)
             send_object = [self.key_events, self.mouse_events,
                            pygame.mouse.get_pos()]
             self.server_funcs.send(["Play", send_object], self.client)
@@ -611,9 +611,9 @@ class Game:
             time.sleep(0.5)
         while self.playing:
             self.receive_object = self.server_funcs.receive(self.client)
-            print(f"KEYDOWNS : {self.receive_object[0][pygame.KEYDOWN]}, KEYUPS : {self.receive_object[0][pygame.KEYUP]}"
-                  f", MOUSEDOWNS : {self.receive_object[1][pygame.MOUSEBUTTONDOWN]},MOUSEUPS : "
-                  f"{self.receive_object[1][pygame.MOUSEBUTTONUP]}, POS : {self.receive_object[2]}")
+            #print(f"KEYDOWNS : {self.receive_object[0][pygame.KEYDOWN]}, KEYUPS : {self.receive_object[0][pygame.KEYUP]}"
+            #      f", MOUSEDOWNS : {self.receive_object[1][pygame.MOUSEBUTTONDOWN]},MOUSEUPS : "
+            #      f"{self.receive_object[1][pygame.MOUSEBUTTONUP]}, POS : {self.receive_object[2]}")
             self.external_time_stamp = pygame.time.get_ticks()
 
 
