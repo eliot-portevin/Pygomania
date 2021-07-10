@@ -149,6 +149,7 @@ class Player(pygame.sprite.Sprite):
             if pygame.sprite.collide_mask(self, sprite):
                 hits.append(sprite)
         return hits
+
     def damage(self,amount):
         if self.life < amount:
             # Il est mort

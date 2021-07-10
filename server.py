@@ -22,7 +22,7 @@ class ServerClass:
         self.games = {}
 
     def send(self, msg, client):
-        print(f"SENDING : {msg} to {client}.")
+
         message = pickle.dumps(msg)
         msg_length = len(message)
         send_length = str(msg_length).encode(FORMAT)
@@ -52,7 +52,7 @@ def handle_clients(conn, addr):
     connected = True
     while connected:
         message = s.receive(conn)
-        print(f"RECEIVED : {message} from {addr}")
+        # print(f"RECEIVED : {message} from {addr}")
         if message == DISCONNECT_MSG:
             for i in s.games.values():
                 if conn in i:
@@ -63,6 +63,7 @@ def handle_clients(conn, addr):
             connected = False
         elif message[0] == "Play":
             game = s.games[s.ingame[conn]]
+            print(f"SENDING : {message[1]}.")
             s.send(message[1], game[(game.index(conn) + 1) % 2])
         elif message == "Games":
             s.send(list(s.games.keys()), conn)
