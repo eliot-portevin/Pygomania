@@ -41,7 +41,9 @@ class Game:
         self.keys = {}
         self.keys_2 = {}
         self.key_events = {pygame.KEYDOWN: [[],[]], pygame.KEYUP: [[],[]]}
+        self.key_events_to_send = {pygame.KEYDOWN: [[],[]], pygame.KEYUP: [[],[]]}
         self.mouse_events = {pygame.MOUSEBUTTONDOWN: [[],[]], pygame.MOUSEBUTTONUP: [[],[]]}
+        self.mouse_events_to_send = {pygame.MOUSEBUTTONDOWN: [[],[]], pygame.MOUSEBUTTONUP: [[],[]]}
         self.mouse_buttons = {}
         self.mouse_buttons_2 = {}
 
@@ -315,25 +317,32 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 self.key_events[pygame.KEYDOWN][0].append(event.key)
+                self.key_events_to_send[pygame.KEYDOWN][0].append(event.key)
                 self.key_events[pygame.KEYDOWN][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
+                self.key_events_to_send[pygame.KEYDOWN][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
 
             elif event.type == pygame.KEYUP:
                 print(f"{event.key} UP")
                 self.key_events[pygame.KEYUP][0].append(event.key)
                 self.key_events[pygame.KEYUP][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
+                self.key_events_to_send[pygame.KEYUP][0].append(event.key)
+                self.key_events_to_send[pygame.KEYUP][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.mouse_events[pygame.MOUSEBUTTONDOWN][0].append(event.button)
                 self.mouse_events[pygame.MOUSEBUTTONDOWN][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
+                self.mouse_events_to_send[pygame.MOUSEBUTTONDOWN][0].append(event.button)
+                self.mouse_events_to_send[pygame.MOUSEBUTTONDOWN][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.mouse_events[pygame.MOUSEBUTTONUP][0].append(event.button)
                 self.mouse_events[pygame.MOUSEBUTTONUP][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
+                self.mouse_events_to_send[pygame.MOUSEBUTTONUP][0].append(event.button)
+                self.mouse_events_to_send[pygame.MOUSEBUTTONUP][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
 
             elif event.type == pygame.QUIT:
                 self.playing = False
                 pygame.quit()
-            print(self.key_events)
 
     def use_events(self):
         for _ in range(len(self.key_events[pygame.KEYDOWN][1])):
@@ -497,8 +506,6 @@ class Game:
                 del self.receive_object[1][pygame.MOUSEBUTTONUP][0][0]
                 break
 
-
-
     def menu_update(self):
         self.WINDOW.blit(self.title_font2,
                          (round(self.W / 2 - self.title_font2.get_width() / 2 - 7), round(self.H / 2.6 + 7)))
@@ -599,11 +606,11 @@ class Game:
             time.sleep(0.5)
         while self.playing:
             time.sleep(0.05)
-            send_object = [self.key_events, self.mouse_events,
+            send_object = [self.key_events_to_send, self.mouse_events_to_send,
                            pygame.mouse.get_pos()]
             self.server_funcs.send(["Play", send_object], self.client)
-            # self.key_events = {pygame.KEYDOWN: [[],[]], pygame.KEYUP: [[],[]]}
-            # self.mouse_events = {pygame.MOUSEBUTTONDOWN: [[],[]], pygame.MOUSEBUTTONUP: [[],[]]}
+            self.key_events_to_send = {pygame.KEYDOWN: [[],[]], pygame.KEYUP: [[],[]]}
+            self.mouse_events_to_send = {pygame.MOUSEBUTTONDOWN: [[],[]], pygame.MOUSEBUTTONUP: [[],[]]}
             self.internal_time_stamp = pygame.time.get_ticks()
 
     def receive_online(self):
@@ -615,16 +622,17 @@ class Game:
             #      f", MOUSEDOWNS : {self.receive_object[1][pygame.MOUSEBUTTONDOWN]},MOUSEUPS : "
             #      f"{self.receive_object[1][pygame.MOUSEBUTTONUP]}, POS : {self.receive_object[2]}")
             self.actualise_events()
+
     def actualise_events(self):
         timing = pygame.time.get_ticks()
         for i in range(len(self.receive_object[0][pygame.KEYDOWN][1])):
             self.receive_object[0][pygame.KEYDOWN][1][i] += timing
         for i in range(len(self.receive_object[0][pygame.KEYUP][1])):
-            self.receive_object[0][pygame.KEYDOWN][1][i] += timing
+            self.receive_object[0][pygame.KEYUP][1][i] += timing
         for i in range(len(self.receive_object[1][pygame.MOUSEBUTTONDOWN][1])):
-            self.receive_object[1][pygame.KEYDOWN][1][i] += timing
+            self.receive_object[1][pygame.MOUSEBUTTONDOWN][1][i] += timing
         for i in range(len(self.receive_object[1][pygame.MOUSEBUTTONUP][1])):
-            self.receive_object[1][pygame.KEYDOWN][1][i] += timing
+            self.receive_object[1][pygame.MOUSEBUTTONUP][1][i] += timing
 
 
 
