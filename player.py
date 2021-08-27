@@ -4,6 +4,7 @@ from spritesheet import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
+
     def __init__(self, W, H, x, y, character, platforms):
         super().__init__()
         self.dir = character
@@ -99,11 +100,11 @@ class Player(pygame.sprite.Sprite):
 
     def move_right(self, dt):
         if self.rect.x < self.W - self.image.get_width():
-            self.rect.x += round(5 * dt)
+            self.rect.x += round((5 * dt)/1920*self.W)
 
     def move_left(self, dt):
         if self.rect.x > 0:
-            self.rect.x -= round(5 * dt)
+            self.rect.x -= ((5 * dt)/1920*self.W)
 
     def jump(self):
         if not self.jump_animation and not self.jumping:

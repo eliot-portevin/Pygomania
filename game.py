@@ -322,7 +322,6 @@ class Game:
                 self.key_events_to_send[pygame.KEYDOWN][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
 
             elif event.type == pygame.KEYUP:
-                print(f"{event.key} UP")
                 self.key_events[pygame.KEYUP][0].append(event.key)
                 self.key_events[pygame.KEYUP][1].append(pygame.time.get_ticks() - self.internal_time_stamp)
                 self.key_events_to_send[pygame.KEYUP][0].append(event.key)
@@ -606,8 +605,7 @@ class Game:
             time.sleep(0.5)
         while self.playing:
             time.sleep(0.05)
-            send_object = [self.key_events_to_send, self.mouse_events_to_send,
-                           pygame.mouse.get_pos()]
+            send_object = [self.key_events_to_send, self.mouse_events_to_send, pygame.mouse.get_pos()]
             self.server_funcs.send(["Play", send_object], self.client)
             self.key_events_to_send = {pygame.KEYDOWN: [[],[]], pygame.KEYUP: [[],[]]}
             self.mouse_events_to_send = {pygame.MOUSEBUTTONDOWN: [[],[]], pygame.MOUSEBUTTONUP: [[],[]]}
@@ -618,9 +616,9 @@ class Game:
             time.sleep(0.5)
         while self.playing:
             self.receive_object = self.server_funcs.receive(self.client)
-            #print(f"KEYDOWNS : {self.receive_object[0][pygame.KEYDOWN]}, KEYUPS : {self.receive_object[0][pygame.KEYUP]}"
-            #      f", MOUSEDOWNS : {self.receive_object[1][pygame.MOUSEBUTTONDOWN]},MOUSEUPS : "
-            #      f"{self.receive_object[1][pygame.MOUSEBUTTONUP]}, POS : {self.receive_object[2]}")
+            print(f"KEYDOWNS : {self.receive_object[0][pygame.KEYDOWN]}, KEYUPS : {self.receive_object[0][pygame.KEYUP]}"
+                  f", MOUSEDOWNS : {self.receive_object[1][pygame.MOUSEBUTTONDOWN]},MOUSEUPS : "
+                  f"{self.receive_object[1][pygame.MOUSEBUTTONUP]}, POS : {self.receive_object[2]}")
             self.actualise_events()
 
     def actualise_events(self):
